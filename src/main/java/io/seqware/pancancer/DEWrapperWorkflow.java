@@ -84,8 +84,8 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
     private Boolean runDkfz = true;
     // docker names
     private String dkfzDockerName = "pancancer/dkfz_dockered_workflows";
-    private String emblDockerName = "pancancer/pcawg-delly-workflow";
-    private String gnosDownloadName = "seqware/pancancer_upload_download";
+    private String emblDockerName = "pancancer/pcawg-delly-workflow:1.0";
+    private String gnosDownloadName = "pancancer/pancancer_upload_download:1.0";
     private String localXMLMetadataPath;
     private List<String> localXMLMetadataFiles;
 
