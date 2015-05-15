@@ -231,16 +231,23 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
 
         // call the EMBL workflow
         Job emblJob = runEMBLWorkflow(lastDownloadDataJob);
-        Job lastWorkflow = emblJob;
+        Job dkfzJob = null;
 
+        Job uploadEMBLJob = this.uploadEMBLJob();
+        uploadEMBLJob.addParent(emblJob);
+
+        Job uploadDKFZJob = null;
         if (runDkfz) {
             // call the DKFZ workflow
-            Job dkfzJob = runDKFZWorkflow(emblJob);
-            lastWorkflow = dkfzJob;
+            dkfzJob = runDKFZWorkflow(emblJob);
+            uploadDKFZJob = this.uploadDKFZJob();
+            uploadDKFZJob.addParent(emblJob);
+            uploadDKFZJob.addParent(dkfzJob);
+            uploadEMBLJob.addParent(dkfzJob);
         }
 
         // now cleanupJob
-        cleanupWorkflow(lastWorkflow);
+        cleanupWorkflow(uploadEMBLJob, uploadDKFZJob);
 
     }
 
@@ -248,15 +255,19 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
      * JOB BUILDING METHODS
      */
 
-    private void cleanupWorkflow(Job lastJob) {
+    private void cleanupWorkflow(Job... lastJobs) {
+        Job cleanupJob = null;
         if (cleanup) {
-            Job cleanupJob = this.getWorkflow().createBashJob("cleanup");
+            cleanupJob = this.getWorkflow().createBashJob("cleanup");
             cleanupJob.getCommand().addArgument("echo rf -Rf * \n");
-            cleanupJob.addParent(lastJob);
         } else if (cleanupBams) {
-            Job cleanupJob = this.getWorkflow().createBashJob("cleanupBams");
+            cleanupJob = this.getWorkflow().createBashJob("cleanupBams");
             cleanupJob.getCommand().addArgument("rm -f ./*/*.bam && ").addArgument("rm -f ./shared_workspace/*/*.bam; ");
-            cleanupJob.addParent(lastJob);
+        }
+        for (Job lastJob : lastJobs) {
+            if (lastJob != null && cleanupJob != null) {
+                cleanupJob.addParent(lastJob);
+            }
         }
     }
 
@@ -316,8 +327,10 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         emblJob.getCommand().addArgument("date +%s >> embl_timing.txt \n");
 
         emblJob.addParent(previousJobPointer);
-        previousJobPointer = emblJob;
+        return emblJob;
+    }
 
+    private Job uploadEMBLJob() throws RuntimeException {
         // upload the EMBL results
 
         List<String> vcfs = new ArrayList<>();
@@ -326,11 +339,9 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         List<String> vcfmd5s = new ArrayList<>();
         List<String> tbimd5s = new ArrayList<>();
         List<String> tarmd5s = new ArrayList<>();
-
         // FIXME: really just need one timing file not broken down by tumorAliquotID! This will be key for multi-tumor donors
         String qcJson = null;
         String timingJson = null;
-
         // FIXME: these don't quite follow the naming convention
         for (String tumorAliquotId : tumorAliquotIds) {
 
@@ -375,11 +386,9 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
             tarmd5s.add(baseFile + ".sv.cov.tar.gz.md5");
 
         }
-
         // perform upload to GNOS
         // FIXME: hardcoded versions, URLs, etc
         Job uploadJob = this.getWorkflow().createBashJob("uploadEMBL");
-
         // params
         StringBuilder overrideTxt = new StringBuilder();
         if (this.studyRefnameOverride != null) {
@@ -388,7 +397,6 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         if (this.analysisCenterOverride != null) {
             overrideTxt.append(" --analysis-center-override ").append(this.analysisCenterOverride);
         }
-
         // Now do the upload based on the destination chosen
         // NOTE: I'm using the wrapper workflow version here so it's immediately obvious what wrapper was used
         if (LOCAL.equalsIgnoreCase(uploadDestination)) {
@@ -418,11 +426,7 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         } else {
             throw new RuntimeException("Don't know what download Type " + downloadSource + " is!");
         }
-
-        uploadJob.addParent(previousJobPointer);
-        // I want DKFZ to continue while the upload is going for EMBL
-        return previousJobPointer;
-
+        return uploadJob;
     }
 
     private Job runDKFZWorkflow(Job previousJobPointer) {
@@ -498,6 +502,10 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
 
         runWorkflow.addParent(generateIni);
 
+        return runWorkflow;
+    }
+
+    private Job uploadDKFZJob() throws RuntimeException {
         // upload the DKFZ results
 
         List<String> vcfs = new ArrayList<>();
@@ -605,9 +613,6 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         } else {
             throw new RuntimeException("Don't know what download Type " + downloadSource + " is!");
         }
-
-        uploadJob.addParent(runWorkflow);
-
         return uploadJob;
     }
 
