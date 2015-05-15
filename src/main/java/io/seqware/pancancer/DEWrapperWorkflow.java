@@ -48,7 +48,6 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
     private List<String> bams = null;
     private String gnosServer = null;
     private String pemFile = null;
-    private String uploadPemFile = null;
     private String uploadServer = null;
     private String metadataURLs = null;
     private List<String> tumorAliquotIds = null;
@@ -74,11 +73,9 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
     private int gnosRetries = 3;
     // S3
     private String controlS3URL = null;
-    private List<String> tumourBamS3Urls = null;
     private List<String> allBamS3Urls = null;
     private String s3Key = null;
     private String s3SecretKey = null;
-    private String uploadLocalPath = null;
     private String uploadS3BucketPath = null;
     // workflows to run
     private Boolean runDkfz = true;
@@ -109,7 +106,6 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
 
             // S3 URLs
             controlS3URL = getProperty("controlBamS3Url");
-            tumourBamS3Urls = Lists.newArrayList(getProperty("tumourBamS3Urls").split(","));
             allBamS3Urls = Lists.newArrayList(getProperty("tumourBamS3Urls").split(","));
             allBamS3Urls.add(controlS3URL);
             s3Key = getProperty("s3Key");
@@ -118,7 +114,6 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
 
             // these variables are those extra required for EMBL upload
             this.uploadServer = getProperty("uploadServer");
-            this.uploadPemFile = getProperty("uploadPemFile");
             StringBuilder metadataURLBuilder = new StringBuilder();
             metadataURLBuilder.append(uploadServer).append("/cghub/metadata/analysisFull/").append(controlAnalysisId);
             for (String id : Lists.newArrayList(getProperty("tumourAnalysisIds").split(","))) {
@@ -157,7 +152,6 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
             // local file mode
             downloadSource = getProperty("downloadSource");
             uploadDestination = getProperty("uploadDestination");
-            uploadLocalPath = getProperty("uploadLocalPath");
             if (LOCAL.equals(downloadSource)) {
                 System.err
                         .println("WARNING\n\tRunning in direct file mode, direct access BAM files will be used and assumed to be full paths\n");
