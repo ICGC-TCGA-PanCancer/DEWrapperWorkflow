@@ -26,7 +26,7 @@ In order to get this running, you will need to setup Docker on your worker host(
 Next, after logging back in, cache the seqware containers that we will be using 
 
         docker pull pancancer/seqware_whitestar_pancancer:1.1.1
-        docker pull pancancer/pancancer_upload_download:1.0
+        docker pull pancancer/pancancer_upload_download:1.1
         docker pull pancancer/pcawg-delly-workflow:1.0
         
 ### Worker Host Docker Image Build for DKFZ   
