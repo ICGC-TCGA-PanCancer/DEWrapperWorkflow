@@ -82,10 +82,11 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
     private String uploadS3BucketPath = null;
     // workflows to run
     private Boolean runDkfz = true;
-    // docker names
-    private String dkfzDockerName = "pancancer/dkfz_dockered_workflows";
-    private String emblDockerName = "pancancer/pcawg-delly-workflow:1.0";
-    private String gnosDownloadName = "pancancer/pancancer_upload_download:1.0";
+    // docker names, do not specify defaults here. They are misleading and
+    // they will be overridden by the embedded default ini anyways
+    private String dkfzDockerName;
+    private String emblDockerName;
+    private String gnosDownloadName;
     private String localXMLMetadataPath;
     private List<String> localXMLMetadataFiles;
 
