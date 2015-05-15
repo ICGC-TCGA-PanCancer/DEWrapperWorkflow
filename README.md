@@ -121,7 +121,15 @@ You can use Adam's tool for generating many INI files, one per donor, and it tak
 The INI files let you control many functions of the workflow.  Here are some of the most important and some that are 
 useful but difficult to understand.
 
-#### core variables that change per workflow
+#### Important variables for 1.0.1
+
+Please specify the following to fix your container versions. This mechanism is also how we will release new sub-components:
+
+    dkfzDockerName=pancancer/dkfz_dockered_workflows
+    emblDockerName=pancancer/pcawg-delly-workflow:1.0
+    gnosDockerName=pancancer/pancancer_upload_download:1.1
+
+#### Core variables that change per workflow
 
 The INI contains several important variables that change from donor run to donor run.  These include:
 
@@ -155,7 +163,7 @@ Note that "/not-datastore" is arbitrary and can be changed on your system.
 Third, "common_data_dir" is the ini parameter that needs to be changed to reflect the alternate path.
 
         
-#### file modes
+#### File modes
 
 There are three file modes for reading and writing: GNOS, local, S3.  Usually people use GNOS for both
 reading and writing the files.  But local file mode can be used when files are already downloaded locally or
