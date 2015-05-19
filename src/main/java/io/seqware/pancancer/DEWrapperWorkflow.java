@@ -485,6 +485,8 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         runWorkflow.getCommand().addArgument("date +%s > dkfz_timing.txt \n");
         runWorkflow.getCommand().addArgument(
                 "docker run "
+                        // container seems to assume that the host is called master
+                        + "-h master "
                         // mount shared directories
                         + "-v " + commonDataDir + "/dkfz/" + dkfzDataBundleUUID
                         + "/bundledFiles:/mnt/datastore/bundledFiles "
