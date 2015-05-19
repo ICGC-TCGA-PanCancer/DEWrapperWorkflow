@@ -94,7 +94,7 @@ Copy your pem key to:
 
 Now you can launch a test run of the workflow using the whitestar workflow engine which is much faster but lacks the more advanced features that are normally present in SeqWare. See [Developing in Partial SeqWare Environments with Whitestar](https://seqware.github.io/docs/6-pipeline/partial_environments/) for details. 
 
-       docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock -v /datastore:/dastore -v /workflows:/workflows -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem pancancer/seqware_whitestar_pancancer:1.1.1 seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.2_SeqWare_1.1.0 --engine whitestar --no-metadata
+       docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock -v /datastore:/datastore -v /workflows:/workflows -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem pancancer/seqware_whitestar_pancancer:1.1.1 seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.2_SeqWare_1.1.0 --engine whitestar --no-metadata
 
 Look in your datastore for the oozie-<uuid> working directory created.  This contains the scripts/logs (generated-script directory) and the working directory for the two workflows (shared-data):
 
