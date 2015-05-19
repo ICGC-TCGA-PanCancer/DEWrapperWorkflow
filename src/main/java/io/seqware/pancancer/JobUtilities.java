@@ -43,14 +43,14 @@ public class JobUtilities {
                                 // link in the pem kee
                                 + "-v "
                                 + pemFile
-                                + ":/root/gnos_icgc_keyfile.pem "
+                                + ":/gnos_icgc_keyfile.pem "
                                 + dockerName
                                 + " "
                                 // here is the Bash command to be run
                                 + " /bin/bash -c 'cd /workflow_data/ && perl -I /opt/gt-download-upload-wrapper/gt-download-upload-wrapper-2.0.10/lib "
                                 + "/opt/vcf-uploader/vcf-uploader-2.0.4/gnos_download_file.pl " + "--url " + gnosServer
-                                + "/cghub/data/analysis/download/" + analysisId + " " + "--pem /root/gnos_icgc_keyfile.pem --file "
-                                + analysisId + "/" + bam + " --retries " + retries + " --timeout-min " + timeout + "' \n");
+                                + "/cghub/data/analysis/download/" + analysisId + " " + "--pem /gnos_icgc_keyfile.pem --file " + analysisId
+                                + "/" + bam + " --retries " + retries + " --timeout-min " + timeout + "' \n");
 
         return thisJob;
     }
@@ -298,7 +298,7 @@ public class JobUtilities {
                         // link in the pem key
                         + "-v "
                         + pemFile
-                        + ":/root/gnos_icgc_keyfile.pem "
+                        + ":/gnos_icgc_keyfile.pem "
                         + (localXMLMetadataPath == null ? "" : "-v " + localXMLMetadataPath + ":/xml ")
                         + dockerName
                         + " "
@@ -312,7 +312,7 @@ public class JobUtilities {
                         + " --vcfs " + Joiner.on(',').join(vcfs) + " --vcf-md5sum-files " + Joiner.on(',').join(vcfmd5s) + " --vcf-idxs "
                         + Joiner.on(',').join(tbis) + " --vcf-idx-md5sum-files " + Joiner.on(',').join(tbimd5s) + " --tarballs "
                         + Joiner.on(',').join(tars) + " --tarball-md5sum-files " + Joiner.on(',').join(tarmd5s) + " --outdir uploads"
-                        + " --key /root/gnos_icgc_keyfile.pem --upload-url " + uploadServer + " --qc-metrics-json " + qcJson
+                        + " --key /gnos_icgc_keyfile.pem --upload-url " + uploadServer + " --qc-metrics-json " + qcJson
                         + " --timing-metrics-json " + timingJson + " --workflow-src-url " + workflowSrcUrl + " --workflow-url "
                         + workflowUrl + " --workflow-name " + workflowName + " --timeout-min " + timeout + " --retries " + retries + " "
                         + " --workflow-version " + workflowVersion + " --seqware-version " + seqwareVersion + " --vm-instance-type "

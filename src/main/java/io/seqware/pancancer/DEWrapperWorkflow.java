@@ -671,14 +671,14 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
                                 // link in the pem key
                                 + "-v "
                                 + dkfzDataBundleDownloadKey
-                                + ":/root/gnos_icgc_keyfile.pem "
+                                + ":/gnos_icgc_keyfile.pem "
                                 + gnosDownloadName
                                 // here is the Bash command to be run
                                 + " /bin/bash -c 'cd /workflow_data/ && perl -I /opt/gt-download-upload-wrapper/gt-download-upload-wrapper-2.0.10/lib "
                                 + "/opt/vcf-uploader/vcf-uploader-2.0.4/gnos_download_file.pl " + "--url " + dkfzDataBundleServer
                                 + "/cghub/data/analysis/download/" + dkfzDataBundleUUID + " --file " + dkfzDataBundleUUID + "/"
                                 + dkfzDataBundleFile + " --retries " + gnosRetries + " --timeout-min " + gnosTimeoutMin + " "
-                                + "  --pem /root/gnos_icgc_keyfile.pem && " + "cd " + dkfzDataBundleUUID + " && " + "tar zxf "
+                                + "  --pem /gnos_icgc_keyfile.pem && " + "cd " + dkfzDataBundleUUID + " && " + "tar zxf "
                                 + dkfzDataBundleFile + "' \n fi \n ");
         getDKFZReferenceDataJob.getCommand().addArgument("cd - \n");
         getDKFZReferenceDataJob.getCommand().addArgument("date +%s >> dkfz_reference_timing.txt \n");
