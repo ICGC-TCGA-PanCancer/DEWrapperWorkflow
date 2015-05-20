@@ -121,7 +121,7 @@ You can use Adam's tool for generating many INI files, one per donor, and it tak
 The INI files let you control many functions of the workflow.  Here are some of the most important and some that are 
 useful but difficult to understand.
 
-#### Important variables for 1.0.1
+#### Important variables for 1.0.1+
 
 Please specify the following to fix your container versions. This mechanism is also how we will release new sub-components:
 
