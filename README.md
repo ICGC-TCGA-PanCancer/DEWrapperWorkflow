@@ -281,7 +281,7 @@ valid PEM key on the path specified:
 
 It's the same key and set to upload back to EBI under the test study.
 
-        study-refname-override=CGTEST
+        study-refname-override=icgc_pancancer_vcf_test
         
 Keep in mind if you use two different keys (say you download and upload to different GNOS repos) then you need
 to provide two `-v` options to the `docker run...` of this workflow, each pointing to a different pem path.
