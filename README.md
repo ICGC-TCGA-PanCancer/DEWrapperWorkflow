@@ -354,5 +354,5 @@ Third, pull from bitbucket and push to Github
 This project uses components from the following projects
 
 * [pcawg_embl_workflow](https://github.com/ICGC-TCGA-PanCancer/pcawg_delly_workflow)
-* [pcawg_dkfz_workflow](https://github.com/SeqWare/docker/tree/develop/dkfz_dockered_workflows)
+* [pcawg_dkfz_workflow](https://github.com/ICGC-TCGA-PanCancer/dkfz_dockered_workflows)
 * [genetorrent](https://cghub.ucsc.edu/software/downloads.html)
