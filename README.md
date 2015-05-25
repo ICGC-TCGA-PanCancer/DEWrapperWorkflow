@@ -308,9 +308,13 @@ In order to control the number of times SeqWare will retry workflow steps, you w
     OOZIE_RETRY_MAX=0
     OOZIE_RETRY_INTERVAL=5
 
-In order to retry the workflow as a whole, since Whitestar has no database, it stores state information in the working directories for workflow runs. In order to retry, you'll need a command similar to the following:
+In order to retry the workflow as a whole, since Whitestar has no database, it stores state information in the working directories for workflow runs. In order to retry in the simplest case:
 
-    docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock -v /not-datastore:/not-datastore  -v /workflows:/workflows -v `pwd`/non_root_different_dirs_workflow.ini:/workflow.ini -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem seqware/seqware_whitestar_pancancer:1.1.1  bash -c "sed -i 's/datastore/not-datastore/g' /home/seqware/.seqware/settings ; seqware workflow-run retry --working-dir /not-datastore/oozie-aad46ac7-60e7-46fb-9f95-f3552921734f"
+    docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock  -v /workflows:/workflows -v /datastore:/datastore  -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem seqware/seqware_whitestar_pancancer:1.1.1  bash -c "seqware workflow-run retry --working-dir /datastore/oozie-89d6858b-481f-4cef-bf51-0fe4824a8f03"
+
+In order to retry with alternate datastore locations you'll need a command similar to the following:
+
+    docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock -v /not-datastore:/not-datastore  -v /workflows:/workflows -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem seqware/seqware_whitestar_pancancer:1.1.1  bash -c "sed -i 's/datastore/not-datastore/g' /home/seqware/.seqware/settings ; seqware workflow-run retry --working-dir /not-datastore/oozie-aad46ac7-60e7-46fb-9f95-f3552921734f"
 
 ## Developer Info
 
