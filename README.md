@@ -154,14 +154,13 @@ There are three components to this currently, the first docker container is star
 
     docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock -v /not-datastore:/not-datastore  -v /workflows:/workflows -v `pwd`/different_dirs_workflow.ini:/workflow.ini -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem seqware/seqware_whitestar_pancancer:1.1.1  bash -c "sed -i 's/datastore/not-datastore/g' /home/seqware/.seqware/settings ; seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.2_SeqWare_1.1.0 --engine whitestar --no-metadata --ini /workflow.ini"
 
-First, for the section "-v /not-datastore:/not-datastore" that the mount doesn't change to /datastore inside the container. If it does then the current workflow will fail, creating directories in the wrong locations. 
+First, for the section "-v /not-datastore:/not-datastore". Make sure that you match the path inside and outside the container. i.e. do not use something like "-v  /not-datastore:/datastore". If they do not match then the current workflow will fail, having created directories in the wrong locations. 
 
-Second, SeqWare needs to be informed to do its work in the new directory. That's the second portion in bold. Otherwise, SeqWare will do its work in /datastore which is now solely within the container and will now disappear after the container stops.
+Second, SeqWare needs to be informed to do its work in the new directory. That's the portion of the command "sed -i 's/datastore/not-datastore/g' /home/seqware/.seqware/settings". Otherwise, SeqWare will do its work in its default working directory of /datastore which is now solely within the container and will now disappear after the container stops.
 
 Note that "/not-datastore" is arbitrary and can be changed on your system.
 
-Third, "common_data_dir" is the ini parameter that needs to be changed to reflect the alternate path.
-
+Third, "common_data_dir" is the ini parameter that needs to be changed to reflect the alternate path. The default ini file which lists all possible parameters is currently at https://github.com/ICGC-TCGA-PanCancer/DEWrapperWorkflow/blob/develop/workflow/config/DEWrapperWorkflow.ini#L44
         
 #### File modes
 
