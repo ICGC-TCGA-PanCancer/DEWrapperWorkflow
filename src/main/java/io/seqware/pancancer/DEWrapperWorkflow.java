@@ -48,7 +48,6 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
     private List<String> bams = null;
     private String gnosServer = null;
     private String pemFile = null;
-    private String uploadPemFile = null;
     private String uploadServer = null;
     private String metadataURLs = null;
     private List<String> tumorAliquotIds = null;
@@ -74,18 +73,17 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
     private int gnosRetries = 3;
     // S3
     private String controlS3URL = null;
-    private List<String> tumourBamS3Urls = null;
     private List<String> allBamS3Urls = null;
     private String s3Key = null;
     private String s3SecretKey = null;
-    private String uploadLocalPath = null;
     private String uploadS3BucketPath = null;
     // workflows to run
     private Boolean runDkfz = true;
-    // docker names
-    private String dkfzDockerName = "pancancer/dkfz_dockered_workflows";
-    private String emblDockerName = "pancancer/pcawg-delly-workflow:1.0";
-    private String gnosDownloadName = "pancancer/pancancer_upload_download:1.0";
+    // docker names, do not specify defaults here. They are misleading and
+    // they will be overridden by the embedded default ini anyways
+    private String dkfzDockerName;
+    private String emblDockerName;
+    private String gnosDownloadName;
     private String localXMLMetadataPath;
     private List<String> localXMLMetadataFiles;
 
@@ -108,7 +106,6 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
 
             // S3 URLs
             controlS3URL = getProperty("controlBamS3Url");
-            tumourBamS3Urls = Lists.newArrayList(getProperty("tumourBamS3Urls").split(","));
             allBamS3Urls = Lists.newArrayList(getProperty("tumourBamS3Urls").split(","));
             allBamS3Urls.add(controlS3URL);
             s3Key = getProperty("s3Key");
@@ -117,7 +114,6 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
 
             // these variables are those extra required for EMBL upload
             this.uploadServer = getProperty("uploadServer");
-            this.uploadPemFile = getProperty("uploadPemFile");
             StringBuilder metadataURLBuilder = new StringBuilder();
             metadataURLBuilder.append(uploadServer).append("/cghub/metadata/analysisFull/").append(controlAnalysisId);
             for (String id : Lists.newArrayList(getProperty("tumourAnalysisIds").split(","))) {
@@ -156,7 +152,6 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
             // local file mode
             downloadSource = getProperty("downloadSource");
             uploadDestination = getProperty("uploadDestination");
-            uploadLocalPath = getProperty("uploadLocalPath");
             if (LOCAL.equals(downloadSource)) {
                 System.err
                         .println("WARNING\n\tRunning in direct file mode, direct access BAM files will be used and assumed to be full paths\n");
@@ -236,16 +231,23 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
 
         // call the EMBL workflow
         Job emblJob = runEMBLWorkflow(lastDownloadDataJob);
-        Job lastWorkflow = emblJob;
+        Job dkfzJob = null;
 
+        Job uploadEMBLJob = this.uploadEMBLJob();
+        uploadEMBLJob.addParent(emblJob);
+
+        Job uploadDKFZJob = null;
         if (runDkfz) {
             // call the DKFZ workflow
-            Job dkfzJob = runDKFZWorkflow(emblJob);
-            lastWorkflow = dkfzJob;
+            dkfzJob = runDKFZWorkflow(emblJob);
+            uploadDKFZJob = this.uploadDKFZJob();
+            uploadDKFZJob.addParent(emblJob);
+            uploadDKFZJob.addParent(dkfzJob);
+            uploadEMBLJob.addParent(dkfzJob);
         }
 
         // now cleanupJob
-        cleanupWorkflow(lastWorkflow);
+        cleanupWorkflow(uploadEMBLJob, uploadDKFZJob);
 
     }
 
@@ -253,15 +255,19 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
      * JOB BUILDING METHODS
      */
 
-    private void cleanupWorkflow(Job lastJob) {
+    private void cleanupWorkflow(Job... lastJobs) {
+        Job cleanupJob = null;
         if (cleanup) {
-            Job cleanupJob = this.getWorkflow().createBashJob("cleanup");
+            cleanupJob = this.getWorkflow().createBashJob("cleanup");
             cleanupJob.getCommand().addArgument("echo rf -Rf * \n");
-            cleanupJob.addParent(lastJob);
         } else if (cleanupBams) {
-            Job cleanupJob = this.getWorkflow().createBashJob("cleanupBams");
+            cleanupJob = this.getWorkflow().createBashJob("cleanupBams");
             cleanupJob.getCommand().addArgument("rm -f ./*/*.bam && ").addArgument("rm -f ./shared_workspace/*/*.bam; ");
-            cleanupJob.addParent(lastJob);
+        }
+        for (Job lastJob : lastJobs) {
+            if (lastJob != null && cleanupJob != null) {
+                cleanupJob.addParent(lastJob);
+            }
         }
     }
 
@@ -321,8 +327,10 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         emblJob.getCommand().addArgument("date +%s >> embl_timing.txt \n");
 
         emblJob.addParent(previousJobPointer);
-        previousJobPointer = emblJob;
+        return emblJob;
+    }
 
+    private Job uploadEMBLJob() throws RuntimeException {
         // upload the EMBL results
 
         List<String> vcfs = new ArrayList<>();
@@ -331,11 +339,9 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         List<String> vcfmd5s = new ArrayList<>();
         List<String> tbimd5s = new ArrayList<>();
         List<String> tarmd5s = new ArrayList<>();
-
         // FIXME: really just need one timing file not broken down by tumorAliquotID! This will be key for multi-tumor donors
         String qcJson = null;
         String timingJson = null;
-
         // FIXME: these don't quite follow the naming convention
         for (String tumorAliquotId : tumorAliquotIds) {
 
@@ -380,11 +386,9 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
             tarmd5s.add(baseFile + ".sv.cov.tar.gz.md5");
 
         }
-
         // perform upload to GNOS
         // FIXME: hardcoded versions, URLs, etc
         Job uploadJob = this.getWorkflow().createBashJob("uploadEMBL");
-
         // params
         StringBuilder overrideTxt = new StringBuilder();
         if (this.studyRefnameOverride != null) {
@@ -393,7 +397,6 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         if (this.analysisCenterOverride != null) {
             overrideTxt.append(" --analysis-center-override ").append(this.analysisCenterOverride);
         }
-
         // Now do the upload based on the destination chosen
         // NOTE: I'm using the wrapper workflow version here so it's immediately obvious what wrapper was used
         if (LOCAL.equalsIgnoreCase(uploadDestination)) {
@@ -423,11 +426,7 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         } else {
             throw new RuntimeException("Don't know what download Type " + downloadSource + " is!");
         }
-
-        uploadJob.addParent(previousJobPointer);
-        // I want DKFZ to continue while the upload is going for EMBL
-        return previousJobPointer;
-
+        return uploadJob;
     }
 
     private Job runDKFZWorkflow(Job previousJobPointer) {
@@ -486,6 +485,8 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         runWorkflow.getCommand().addArgument("date +%s > dkfz_timing.txt \n");
         runWorkflow.getCommand().addArgument(
                 "docker run "
+                        // container seems to assume that the host is called master
+                        + "-h master "
                         // mount shared directories
                         + "-v " + commonDataDir + "/dkfz/" + dkfzDataBundleUUID
                         + "/bundledFiles:/mnt/datastore/bundledFiles "
@@ -503,6 +504,10 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
 
         runWorkflow.addParent(generateIni);
 
+        return runWorkflow;
+    }
+
+    private Job uploadDKFZJob() throws RuntimeException {
         // upload the DKFZ results
 
         List<String> vcfs = new ArrayList<>();
@@ -610,9 +615,6 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         } else {
             throw new RuntimeException("Don't know what download Type " + downloadSource + " is!");
         }
-
-        uploadJob.addParent(runWorkflow);
-
         return uploadJob;
     }
 
@@ -671,14 +673,14 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
                                 // link in the pem key
                                 + "-v "
                                 + dkfzDataBundleDownloadKey
-                                + ":/root/gnos_icgc_keyfile.pem "
+                                + ":/gnos_icgc_keyfile.pem "
                                 + gnosDownloadName
                                 // here is the Bash command to be run
                                 + " /bin/bash -c 'cd /workflow_data/ && perl -I /opt/gt-download-upload-wrapper/gt-download-upload-wrapper-2.0.10/lib "
                                 + "/opt/vcf-uploader/vcf-uploader-2.0.4/gnos_download_file.pl " + "--url " + dkfzDataBundleServer
                                 + "/cghub/data/analysis/download/" + dkfzDataBundleUUID + " --file " + dkfzDataBundleUUID + "/"
                                 + dkfzDataBundleFile + " --retries " + gnosRetries + " --timeout-min " + gnosTimeoutMin + " "
-                                + "  --pem /root/gnos_icgc_keyfile.pem && " + "cd " + dkfzDataBundleUUID + " && " + "tar zxf "
+                                + "  --pem /gnos_icgc_keyfile.pem && " + "cd " + dkfzDataBundleUUID + " && " + "tar zxf "
                                 + dkfzDataBundleFile + "' \n fi \n ");
         getDKFZReferenceDataJob.getCommand().addArgument("cd - \n");
         getDKFZReferenceDataJob.getCommand().addArgument("date +%s >> dkfz_reference_timing.txt \n");

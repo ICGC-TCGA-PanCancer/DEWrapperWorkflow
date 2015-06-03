@@ -25,9 +25,9 @@ In order to get this running, you will need to setup Docker on your worker host(
 
 Next, after logging back in, cache the seqware containers that we will be using 
 
-        docker pull seqware/seqware_whitestar_pancancer:1.1.1
-        docker pull seqware/pancancer_upload_download
-        docker pull pancancer/pcawg-delly-workflow
+        docker pull pancancer/seqware_whitestar_pancancer:1.1.1
+        docker pull pancancer/pancancer_upload_download:1.1
+        docker pull pancancer/pcawg-delly-workflow:1.0
         
 ### Worker Host Docker Image Build for DKFZ   
 
@@ -35,17 +35,17 @@ Next, after logging back in, cache the seqware containers that we will be using
 
 Note, if you have been given a .tar of the DKFZ workflow you can skip the build below and just import it directly into Docker:
 
-        docker load < dkfz_dockered_workflows_1.0.132-1.tar
+        docker load < dkfz_dockered_workflows_1.0.132-2.tar
 
 #### Option 2 - Build 
         
 You need to get and build the DKFZ workflow since we are not allowed to redistribute it on DockerHub:
 
-        git clone https://github.com/SeqWare/docker.git
+        git clone https://github.com/ICGC-TCGA-PanCancer/dkfz_dockered_workflows.git
 
 See the [README](https://github.com/SeqWare/docker/tree/develop/dkfz_dockered_workflows) for how to downloading Roddy bundles of data/binaries and build this Docker image.
 
-        cd ~/gitroot/docker/dkfz_dockered_workflows/
+        cd ~/gitroot/dkfz_dockered_workflows/
         # you need to download the Roddy binary, untar/gz, and move the Roddy directory into the current git checkout dir
         docker build -t pancancer/dkfz_dockered_workflows .
         Successfully built 0805f987f138
@@ -71,19 +71,18 @@ Next, setup your environment with your workflow and a shared datastore directory
 
 I uploaded a copy of the .zip for the DEWrapperWorkflow to Amazon S3 to save you the build time.
 
-        wget https://s3.amazonaws.com/oicr.workflow.bundles/released-bundles/Workflow_Bundle_DEWrapperWorkflow_1.0.0_SeqWare_1.1.0.zip
-        mkdir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.0_SeqWare_1.1.0/
-        java -cp seqware-distribution-1.1.0-full.jar net.sourceforge.seqware.pipeline.tools.UnZip --input-zip Workflow_Bundle_DEWrapperWorkflow_1.0.0_SeqWare_1.1.0.zip --output-dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.0_SeqWare_1.1.0/
+        wget https://s3.amazonaws.com/oicr.workflow.bundles/released-bundles/Workflow_Bundle_DEWrapperWorkflow_1.0.3_SeqWare_1.1.0.zip
+        mkdir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.3_SeqWare_1.1.0/
+        java -cp seqware-distribution-1.1.0-full.jar net.sourceforge.seqware.pipeline.tools.UnZip --input-zip Workflow_Bundle_DEWrapperWorkflow_1.0.3_SeqWare_1.1.0.zip --output-dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.3_SeqWare_1.1.0/
 
 #### Option 2 - Build 
 
 Next, you will need to build a copy of the workflow wrappering the DKFZ and EMBL pipelines.
 
-        git clone https://github.com/SeqWare/public-workflows.git
-        # git checkout feature/workflow-DKFZ-EMBL-wrap-workflow # TODO: replace with release string
-        cd DEWrapperWorkflow/
+        git clone git@github.com:ICGC-TCGA-PanCancer/DEWrapperWorkflow.git
+        git checkout 1.0.3
         mvn clean install
-        rsync -rauvL target/Workflow_Bundle_DEWrapperWorkflow_1.0.0_SeqWare_1.1.0 /workflows/
+        rsync -rauvL target/Workflow_Bundle_DEWrapperWorkflow_1.0.3_SeqWare_1.1.0 /workflows/
 
 ### Worker Host GNOS Pem Key
 
@@ -95,7 +94,7 @@ Copy your pem key to:
 
 Now you can launch a test run of the workflow using the whitestar workflow engine which is much faster but lacks the more advanced features that are normally present in SeqWare. See [Developing in Partial SeqWare Environments with Whitestar](https://seqware.github.io/docs/6-pipeline/partial_environments/) for details. 
 
-       docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock -v /datastore:/datastore -v /workflows:/workflows -v `pwd`/workflow.ini:/workflow.ini -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem seqware/seqware_whitestar_pancancer:1.1.1 /bin/bash -c 'seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.0_SeqWare_1.1.0 --engine whitestar --no-metadata'
+       docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock -v /datastore:/datastore -v /workflows:/workflows -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem pancancer/seqware_whitestar_pancancer:1.1.1 seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.3_SeqWare_1.1.0 --engine whitestar --no-metadata
 
 Look in your datastore for the oozie-<uuid> working directory created.  This contains the scripts/logs (generated-script directory) and the working directory for the two workflows (shared-data):
 
@@ -107,7 +106,7 @@ If you want to run with a specific INI:
 
         # edit the ini
         vim workflow.ini
-        docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock -v /datastore:/datastore -v /workflows:/workflows -v `pwd`/workflow.ini:/workflow.ini -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem seqware/seqware_whitestar_pancancer:1.1.1 bash -c 'seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.0_SeqWare_1.1.0 --engine whitestar --no-metadata --ini /workflow.ini'
+        docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock -v /datastore:/datastore -v /workflows:/workflows -v `pwd`/workflow.ini:/workflow.ini -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem pancancer/seqware_whitestar_pancancer:1.1.1 bash -c 'seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.3_SeqWare_1.1.0 --engine whitestar --no-metadata --ini /workflow.ini'
 
 This is the approach you would take for running in production.  Each donor gets an INI file that is then used to launch a workflow using Docker.  If you choose to upload to S3 or GNOS your files should be uploaded there.  You can also find output in /datastore.
 
@@ -122,7 +121,15 @@ You can use Adam's tool for generating many INI files, one per donor, and it tak
 The INI files let you control many functions of the workflow.  Here are some of the most important and some that are 
 useful but difficult to understand.
 
-#### core variables that change per workflow
+#### Important variables for 1.0.1+
+
+Please specify the following to fix your container versions. This mechanism is also how we will release new sub-components:
+
+    dkfzDockerName=pancancer/dkfz_dockered_workflows
+    emblDockerName=pancancer/pcawg-delly-workflow:1.0
+    gnosDockerName=pancancer/pancancer_upload_download:1.1
+
+#### Core variables that change per workflow
 
 The INI contains several important variables that change from donor run to donor run.  These include:
 
@@ -145,18 +152,17 @@ The INI contains several important variables that change from donor run to donor
 
 There are three components to this currently, the first docker container is started with the following
 
-    docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock -v /not-datastore:/not-datastore  -v /workflows:/workflows -v `pwd`/different_dirs_workflow.ini:/workflow.ini -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem seqware/seqware_whitestar_pancancer:1.1.1  bash -c "sed -i 's/datastore/not-datastore/g' /home/seqware/.seqware/settings ; seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.1_SeqWare_1.1.0 --engine whitestar --no-metadata --ini /workflow.ini"
+    docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock -v /not-datastore:/not-datastore  -v /workflows:/workflows -v `pwd`/different_dirs_workflow.ini:/workflow.ini -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem seqware/seqware_whitestar_pancancer:1.1.1  bash -c "sed -i 's/datastore/not-datastore/g' /home/seqware/.seqware/settings ; seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.3_SeqWare_1.1.0 --engine whitestar --no-metadata --ini /workflow.ini"
 
-First, for the section "-v /not-datastore:/not-datastore" that the mount doesn't change to /datastore inside the container. If it does then the current workflow will fail, creating directories in the wrong locations. 
+First, for the section "-v /not-datastore:/not-datastore". Make sure that you match the path inside and outside the container. i.e. do not use something like "-v  /not-datastore:/datastore". If they do not match then the current workflow will fail, having created directories in the wrong locations. 
 
-Second, SeqWare needs to be informed to do its work in the new directory. That's the second portion in bold. Otherwise, SeqWare will do its work in /datastore which is now solely within the container and will now disappear after the container stops.
+Second, SeqWare needs to be informed to do its work in the new directory. That's the portion of the command "sed -i 's/datastore/not-datastore/g' /home/seqware/.seqware/settings". Otherwise, SeqWare will do its work in its default working directory of /datastore which is now solely within the container and will now disappear after the container stops.
 
 Note that "/not-datastore" is arbitrary and can be changed on your system.
 
-Third, "common_data_dir" is the ini parameter that needs to be changed to reflect the alternate path.
-
+Third, "common\_data\_dir" is the ini parameter that needs to be changed to reflect the alternate path. The default ini file which lists all possible parameters is currently at https://github.com/ICGC-TCGA-PanCancer/DEWrapperWorkflow/blob/develop/workflow/config/DEWrapperWorkflow.ini#L44
         
-#### file modes
+#### File modes
 
 There are three file modes for reading and writing: GNOS, local, S3.  Usually people use GNOS for both
 reading and writing the files.  But local file mode can be used when files are already downloaded locally or
@@ -274,7 +280,7 @@ valid PEM key on the path specified:
 
 It's the same key and set to upload back to EBI under the test study.
 
-        study-refname-override=CGTEST
+        study-refname-override=icgc_pancancer_vcf_test
         
 Keep in mind if you use two different keys (say you download and upload to different GNOS repos) then you need
 to provide two `-v` options to the `docker run...` of this workflow, each pointing to a different pem path.
@@ -287,6 +293,27 @@ if your worker nodes/VMs are long-lived.  In this case the variant call files le
 
         cleanup=false
         cleanupBams=false
+
+#### Retry Options
+
+The 1.1.1 version of SeqWare Whitestar includes global workflow-run retry functionality, per-step retry functionality, and a cleaner output which displays stderr and stdout on failure. See https://seqware.github.io/docs/6-pipeline/partial_environments/#additional-notes for details 
+
+In order to control the number of times SeqWare will retry workflow steps, you will need to modify the .seqware/settings keys defined in the above link. Please note that you can mount a customized .seqware/settings file using data volumes as in the example below:
+
+    $ docker run --rm -h master -t -v `pwd`/datastore:/mnt/datastore -i seqware/seqware_whitestar cat ~/.seqware/settings > custom_settings
+    $ vim custom_settings           (change whatever keys you want, including the default number of retries)
+    $ docker run -v `pwd`/custom_settings:/home/seqware/.seqware/settings --rm -h master -t -v `pwd`/datastore:/mnt/datastore -i seqware/seqware_whitestar /bin/bash
+    seqware@master:~$ grep RETRY ~/.seqware/settings 
+    OOZIE_RETRY_MAX=0
+    OOZIE_RETRY_INTERVAL=5
+
+In order to retry the workflow as a whole, since Whitestar has no database, it stores state information in the working directories for workflow runs. In order to retry in the simplest case:
+
+    docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock  -v /workflows:/workflows -v /datastore:/datastore  -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem seqware/seqware_whitestar_pancancer:1.1.1  bash -c "seqware workflow-run retry --working-dir /datastore/oozie-89d6858b-481f-4cef-bf51-0fe4824a8f03"
+
+In order to retry with alternate datastore locations you'll need a command similar to the following:
+
+    docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock -v /not-datastore:/not-datastore  -v /workflows:/workflows -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem seqware/seqware_whitestar_pancancer:1.1.1  bash -c "sed -i 's/datastore/not-datastore/g' /home/seqware/.seqware/settings ; seqware workflow-run retry --working-dir /not-datastore/oozie-aad46ac7-60e7-46fb-9f95-f3552921734f"
 
 ## Developer Info
 
@@ -330,5 +357,5 @@ Third, pull from bitbucket and push to Github
 This project uses components from the following projects
 
 * [pcawg_embl_workflow](https://github.com/ICGC-TCGA-PanCancer/pcawg_delly_workflow)
-* [pcawg_dkfz_workflow](https://github.com/SeqWare/docker/tree/develop/dkfz_dockered_workflows)
+* [pcawg_dkfz_workflow](https://github.com/ICGC-TCGA-PanCancer/dkfz_dockered_workflows)
 * [genetorrent](https://cghub.ucsc.edu/software/downloads.html)

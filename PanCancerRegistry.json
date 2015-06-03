@@ -1,0 +1,13 @@
+{
+  "PanCancerRegistry" : [
+    {
+      "name" : "FooWorkflow",
+      "version" : "1.0.1",
+      "description" : "description",
+      "source_url" : "Foo",
+      "docker_url" : "Foo",
+      "documentation_url" : "Foo",
+      "tags" : [ "alignment" ]
+    } 
+  ]
+}

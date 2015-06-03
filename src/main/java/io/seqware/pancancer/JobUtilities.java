@@ -7,6 +7,7 @@
 package io.seqware.pancancer;
 
 import com.google.common.base.Joiner;
+import java.util.ArrayList;
 import java.util.List;
 import net.sourceforge.seqware.pipeline.workflowV2.model.Job;
 
@@ -43,14 +44,14 @@ public class JobUtilities {
                                 // link in the pem kee
                                 + "-v "
                                 + pemFile
-                                + ":/root/gnos_icgc_keyfile.pem "
+                                + ":/gnos_icgc_keyfile.pem "
                                 + dockerName
                                 + " "
                                 // here is the Bash command to be run
                                 + " /bin/bash -c 'cd /workflow_data/ && perl -I /opt/gt-download-upload-wrapper/gt-download-upload-wrapper-2.0.10/lib "
                                 + "/opt/vcf-uploader/vcf-uploader-2.0.4/gnos_download_file.pl " + "--url " + gnosServer
-                                + "/cghub/data/analysis/download/" + analysisId + " " + "--pem /root/gnos_icgc_keyfile.pem --file "
-                                + analysisId + "/" + bam + " --retries " + retries + " --timeout-min " + timeout + "' \n");
+                                + "/cghub/data/analysis/download/" + analysisId + " " + "--pem /gnos_icgc_keyfile.pem --file " + analysisId
+                                + "/" + bam + " --retries " + retries + " --timeout-min " + timeout + "' \n");
 
         return thisJob;
     }
@@ -126,11 +127,12 @@ public class JobUtilities {
      * @param localXMLMetadataFiles
      * @return the workflow job
      */
-    public Job localUploadJob(Job uploadJob, String workflowDataDir, String pemFile, String metadataURLs, List<String> vcfs,
-            List<String> vcfmd5s, List<String> tbis, List<String> tbimd5s, List<String> tars, List<String> tarmd5s, String uploadServer,
-            String seqwareVersion, String vmInstanceType, String vmLocationCode, String overrideTxt, String temp, int timeout, int retries,
-            String qcJson, String timingJson, String workflowSrcUrl, String workflowUrl, String workflowName, String workflowVersion,
-            String dockerName, String localXMLMetadataPath, List<String> localXMLMetadataFiles) {
+    public Job localUploadJob(Job uploadJob, String workflowDataDir, String pemFile, String metadataURLs, final List<String> vcfs,
+            final List<String> vcfmd5s, final List<String> tbis, final List<String> tbimd5s, final List<String> tars,
+            final List<String> tarmd5s, String uploadServer, String seqwareVersion, String vmInstanceType, String vmLocationCode,
+            String overrideTxt, String temp, int timeout, int retries, String qcJson, String timingJson, String workflowSrcUrl,
+            String workflowUrl, String workflowName, String workflowVersion, String dockerName, String localXMLMetadataPath,
+            final List<String> localXMLMetadataFiles) {
 
         StringBuilder sb = new StringBuilder(overrideTxt);
         sb.append(" --upload-archive ").append(temp).append(" --skip-upload --skip-validate ");
@@ -170,11 +172,11 @@ public class JobUtilities {
      * @param dockerName
      * @return
      */
-    public Job gnosUploadJob(Job uploadJob, String workflowDataDir, String pemFile, String metadataURLs, List<String> vcfs,
-            List<String> vcfmd5s, List<String> tbis, List<String> tbimd5s, List<String> tars, List<String> tarmd5s, String uploadServer,
-            String seqwareVersion, String vmInstanceType, String vmLocationCode, String overrideTxt, int timeout, int retries,
-            String qcJson, String timingJson, String workflowSrcUrl, String workflowUrl, String workflowName, String workflowVersion,
-            String dockerName) {
+    public Job gnosUploadJob(Job uploadJob, String workflowDataDir, String pemFile, String metadataURLs, final List<String> vcfs,
+            final List<String> vcfmd5s, final List<String> tbis, final List<String> tbimd5s, final List<String> tars,
+            final List<String> tarmd5s, String uploadServer, String seqwareVersion, String vmInstanceType, String vmLocationCode,
+            String overrideTxt, int timeout, int retries, String qcJson, String timingJson, String workflowSrcUrl, String workflowUrl,
+            String workflowName, String workflowVersion, String dockerName) {
 
         return (vcfUpload(uploadJob, workflowDataDir, pemFile, metadataURLs, vcfs, vcfmd5s, tbis, tbimd5s, tars, tarmd5s, uploadServer,
                 seqwareVersion, vmInstanceType, vmLocationCode, overrideTxt, timeout, retries, qcJson, timingJson, workflowSrcUrl,
@@ -215,11 +217,12 @@ public class JobUtilities {
      * @param dockerName
      * @return
      */
-    public Job s3UploadJob(Job uploadJob, String workflowDataDir, String pemFile, String metadataURLs, List<String> vcfs,
-            List<String> vcfmd5s, List<String> tbis, List<String> tbimd5s, List<String> tars, List<String> tarmd5s, String uploadServer,
-            String seqwareVersion, String vmInstanceType, String vmLocationCode, String overrideTxt, String temp,
-            String S3UploadArchiveKey, String S3UploadArchiveSecretKey, String uploadS3Bucket, int timeout, int retries, String qcJson,
-            String timingJson, String workflowSrcUrl, String workflowUrl, String workflowName, String workflowVersion, String dockerName) {
+    public Job s3UploadJob(Job uploadJob, String workflowDataDir, String pemFile, String metadataURLs, final List<String> vcfs,
+            final List<String> vcfmd5s, final List<String> tbis, final List<String> tbimd5s, final List<String> tars,
+            final List<String> tarmd5s, String uploadServer, String seqwareVersion, String vmInstanceType, String vmLocationCode,
+            String overrideTxt, String temp, String S3UploadArchiveKey, String S3UploadArchiveSecretKey, String uploadS3Bucket,
+            int timeout, int retries, String qcJson, String timingJson, String workflowSrcUrl, String workflowUrl, String workflowName,
+            String workflowVersion, String dockerName) {
 
         StringBuilder sb = new StringBuilder(overrideTxt);
         sb.append(" --upload-archive ").append(temp).append(" --skip-upload --skip-validate ");
@@ -272,17 +275,21 @@ public class JobUtilities {
      *            array of filenames for metadata
      * @return the net.sourceforge.seqware.pipeline.workflowV2.model.Job
      */
-    public Job vcfUpload(Job uploadJob, String workflowDataDir, String pemFile, String metadataURLs, List<String> vcfs,
-            List<String> vcfmd5s, List<String> tbis, List<String> tbimd5s, List<String> tars, List<String> tarmd5s, String uploadServer,
-            String seqwareVersion, String vmInstanceType, String vmLocationCode, String overrideTxt, int timeout, int retries,
-            String qcJson, String timingJson, String workflowSrcUrl, String workflowUrl, String workflowName, String workflowVersion,
-            String dockerName, String localXMLMetadataPath, List<String> localXMLMetadataFiles) {
+    public Job vcfUpload(Job uploadJob, String workflowDataDir, String pemFile, String metadataURLs, final List<String> vcfs,
+            final List<String> vcfmd5s, final List<String> tbis, final List<String> tbimd5s, final List<String> tars,
+            final List<String> tarmd5s, String uploadServer, String seqwareVersion, String vmInstanceType, String vmLocationCode,
+            String overrideTxt, int timeout, int retries, String qcJson, String timingJson, String workflowSrcUrl, String workflowUrl,
+            String workflowName, String workflowVersion, String dockerName, String localXMLMetadataPath,
+            final List<String> localXMLMetadataFiles) {
 
         assert (localXMLMetadataPath == null && localXMLMetadataFiles == null || localXMLMetadataPath != null
                 && localXMLMetadataFiles != null);
+        List<String> modifiedLocalXMLMetadataFiles = new ArrayList<>();
         // prepend path to metadatafiles
-        for (int i = 0; localXMLMetadataFiles != null && i < localXMLMetadataFiles.size(); i++) {
-            localXMLMetadataFiles.set(i, "/xml/" + localXMLMetadataFiles.get(i));
+        if (localXMLMetadataFiles != null) {
+            for (String path : localXMLMetadataFiles) {
+                modifiedLocalXMLMetadataFiles.add("/xml/" + path);
+            }
         }
 
         uploadJob.getCommand().addArgument(
@@ -298,7 +305,7 @@ public class JobUtilities {
                         // link in the pem key
                         + "-v "
                         + pemFile
-                        + ":/root/gnos_icgc_keyfile.pem "
+                        + ":/gnos_icgc_keyfile.pem "
                         + (localXMLMetadataPath == null ? "" : "-v " + localXMLMetadataPath + ":/xml ")
                         + dockerName
                         + " "
@@ -308,11 +315,11 @@ public class JobUtilities {
                         + "/opt/vcf-uploader/vcf-uploader-2.0.4/gnos_upload_vcf.pl "
                         // parameters to gnos_upload
                         + "--metadata-urls " + metadataURLs
-                        + (localXMLMetadataFiles == null ? "" : " --metadata-paths " + Joiner.on(',').join(localXMLMetadataFiles))
+                        + (localXMLMetadataFiles == null ? "" : " --metadata-paths " + Joiner.on(',').join(modifiedLocalXMLMetadataFiles))
                         + " --vcfs " + Joiner.on(',').join(vcfs) + " --vcf-md5sum-files " + Joiner.on(',').join(vcfmd5s) + " --vcf-idxs "
                         + Joiner.on(',').join(tbis) + " --vcf-idx-md5sum-files " + Joiner.on(',').join(tbimd5s) + " --tarballs "
                         + Joiner.on(',').join(tars) + " --tarball-md5sum-files " + Joiner.on(',').join(tarmd5s) + " --outdir uploads"
-                        + " --key /root/gnos_icgc_keyfile.pem --upload-url " + uploadServer + " --qc-metrics-json " + qcJson
+                        + " --key /gnos_icgc_keyfile.pem --upload-url " + uploadServer + " --qc-metrics-json " + qcJson
                         + " --timing-metrics-json " + timingJson + " --workflow-src-url " + workflowSrcUrl + " --workflow-url "
                         + workflowUrl + " --workflow-name " + workflowName + " --timeout-min " + timeout + " --retries " + retries + " "
                         + " --workflow-version " + workflowVersion + " --seqware-version " + seqwareVersion + " --vm-instance-type "

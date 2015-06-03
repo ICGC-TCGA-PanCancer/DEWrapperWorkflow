@@ -15,6 +15,17 @@
 * DKFZ is missing timing JSON file, I co-opted this for my full-workflow timing metrics but we really should get them to supply this and just add to it.  Also EMBL timing metrics need a total wall-time.
 * print some helpful messages before the workflow runs indicating where the output will be, touch files for completion, what modes have been set, etc
 
+# 1.0.3
+
+* includes a bug fix for offline mode where XML file paths were not set correctly.
+
+# 1.0.2
+
+* re-orders upload to occur after both workflows are ready
+* fixes default ini file paths
+* fixes issue with pem key for gnos mounted in wrong location (fails workflows when running the first time without reference data handy)
+* reverts the version change for dkfz which is hardcoded in Roddy (fails workflow across the board)
+
 # 1.0.1
 
 Version 1.0.1 represents non-scientific changes and mostly focus on the usability of local file mode, result archiving, and running workflows as non-root inside containers
