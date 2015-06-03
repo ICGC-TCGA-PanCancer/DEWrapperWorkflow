@@ -15,6 +15,10 @@
 * DKFZ is missing timing JSON file, I co-opted this for my full-workflow timing metrics but we really should get them to supply this and just add to it.  Also EMBL timing metrics need a total wall-time.
 * print some helpful messages before the workflow runs indicating where the output will be, touch files for completion, what modes have been set, etc
 
+# 1.0.4
+
+* incrementing the version of the delly Docker image to 1.1, this image only changes the base Docker image used to build, it makes no scientific changes
+
 # 1.0.3
 
 * includes a bug fix for offline mode where XML file paths were not set correctly.
