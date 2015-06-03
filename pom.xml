@@ -9,7 +9,7 @@
 
     <groupId>io.seqware</groupId>
     <artifactId>DEWrapperWorkflow</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
 
     <name>DEWrapperWorkflow</name>
