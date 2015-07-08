@@ -321,7 +321,7 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
                                 + emblDockerName
                                 + " "
                                 // command received by seqware (replace this with a real call to Delly after getting bam files downloaded)
-                                + "seqware bundle launch --dir /home/seqware/DELLY/target/Workflow_Bundle_DELLY_1.0-SNAPSHOT_SeqWare_1.1.0-alpha.6 --engine whitestar-parallel --no-metadata --ini /workflow.ini\n");
+                                + "seqware bundle launch --dir /home/seqware/DELLY/target/Workflow_Bundle_DELLY_1.3.0_SeqWare_1.1.1 --engine whitestar-parallel --no-metadata --ini /workflow.ini\n");
 
         // timing
         emblJob.getCommand().addArgument("date +%s >> embl_timing.txt \n");
@@ -676,8 +676,8 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
                                 + ":/gnos_icgc_keyfile.pem "
                                 + gnosDownloadName
                                 // here is the Bash command to be run
-                                + " /bin/bash -c 'cd /workflow_data/ && perl -I /opt/gt-download-upload-wrapper/gt-download-upload-wrapper-2.0.10/lib "
-                                + "/opt/vcf-uploader/vcf-uploader-2.0.4/gnos_download_file.pl " + "--url " + dkfzDataBundleServer
+                                + " /bin/bash -c 'cd /workflow_data/ && perl -I /opt/gt-download-upload-wrapper/gt-download-upload-wrapper-2.0.11/lib "
+                                + "/opt/vcf-uploader/vcf-uploader-2.0.5/gnos_download_file.pl " + "--url " + dkfzDataBundleServer
                                 + "/cghub/data/analysis/download/" + dkfzDataBundleUUID + " --file " + dkfzDataBundleUUID + "/"
                                 + dkfzDataBundleFile + " --retries " + gnosRetries + " --timeout-min " + gnosTimeoutMin + " "
                                 + "  --pem /gnos_icgc_keyfile.pem && " + "cd " + dkfzDataBundleUUID + " && " + "tar zxf "

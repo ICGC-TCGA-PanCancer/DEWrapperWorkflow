@@ -1,7 +1,8 @@
-# 1.x (Future Release)
+# 1.0.5
 
 ## TODO
 
+* need to use --uuid and other params to link two uploads to each other
 * I think both the Delly and DKFZ docker containers will need to be revised to deal with multiple tumors
 * create an uber-workflow
       * incorporate the Sanger and Broad workflows so all four run together

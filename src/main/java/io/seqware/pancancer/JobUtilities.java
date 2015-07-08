@@ -48,8 +48,8 @@ public class JobUtilities {
                                 + dockerName
                                 + " "
                                 // here is the Bash command to be run
-                                + " /bin/bash -c 'cd /workflow_data/ && perl -I /opt/gt-download-upload-wrapper/gt-download-upload-wrapper-2.0.10/lib "
-                                + "/opt/vcf-uploader/vcf-uploader-2.0.4/gnos_download_file.pl " + "--url " + gnosServer
+                                + " /bin/bash -c 'cd /workflow_data/ && perl -I /opt/gt-download-upload-wrapper/gt-download-upload-wrapper-2.0.11/lib "
+                                + "/opt/vcf-uploader/vcf-uploader-2.0.5/gnos_download_file.pl " + "--url " + gnosServer
                                 + "/cghub/data/analysis/download/" + analysisId + " " + "--pem /gnos_icgc_keyfile.pem --file " + analysisId
                                 + "/" + bam + " --retries " + retries + " --timeout-min " + timeout + "' \n");
 
@@ -311,8 +311,8 @@ public class JobUtilities {
                         + " "
                         // the command invoked on the container follows
                         + "/bin/bash -c 'cd /workflow_data && mkdir -p uploads && "
-                        + "perl -I /opt/gt-download-upload-wrapper/gt-download-upload-wrapper-2.0.10/lib "
-                        + "/opt/vcf-uploader/vcf-uploader-2.0.4/gnos_upload_vcf.pl "
+                        + "perl -I /opt/gt-download-upload-wrapper/gt-download-upload-wrapper-2.0.11/lib "
+                        + "/opt/vcf-uploader/vcf-uploader-2.0.5/gnos_upload_vcf.pl "
                         // parameters to gnos_upload
                         + "--metadata-urls " + metadataURLs
                         + (localXMLMetadataFiles == null ? "" : " --metadata-paths " + Joiner.on(',').join(modifiedLocalXMLMetadataFiles))
@@ -328,6 +328,8 @@ public class JobUtilities {
                         + overrideTxt + "' ");
 
         return uploadJob;
+
+        // TODO: need to use UUID here
     }
 
 }
