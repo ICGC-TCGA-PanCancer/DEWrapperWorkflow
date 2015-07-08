@@ -26,11 +26,11 @@ In order to get this running, you will need to setup Docker on your worker host(
 It's complicated.  The workflows have versions, the underlying tools have versions, and the Docker images built with the previous two have versions.  Also this wrapper workflow has a version.  For the purposes of uploads we use this DEWrapper workflow version as the data upload version.  HOwever keep in mind
  two things:
 
- #### EMBL
+#### EMBL
 
- The workflow is hosted on DockerHub and source in git.  Version 1.1.0 was tagged in git but has no scientific changes.  Just changes to the Docker container.  So the files produced are tagged with "embl-delly_1-0-0-preFilter".
+The workflow is hosted on DockerHub and source in git.  Version 1.3.0 was tagged in git and is focused on multi-tumor support.  So the files produced are tagged with "embl-delly_1-3-0-preFilter".
 
- #### DKFZ
+#### DKFZ
 
 The version for DKFZ below is 1.0.132-2 and this is what we recommend using from the tarball.  However, the output files from this Docker image actually contain the string "1.0.132-1".  So in the workflow.properties this earlier release string is used and referred to via the DEWrapper workflow.
 
@@ -40,8 +40,8 @@ The version for DKFZ below is 1.0.132-2 and this is what we recommend using from
 Next, after logging back in, cache the seqware containers that we will be using 
 
         docker pull pancancer/seqware_whitestar_pancancer:1.1.1
-        docker pull pancancer/pancancer_upload_download:1.1
-        docker pull pancancer/pcawg-delly-workflow:1.1
+        docker pull pancancer/pancancer_upload_download:1.2
+        docker pull pancancer/pcawg-delly-workflow:1.3
         
 ### Worker Host Docker Image Build for DKFZ   
 
