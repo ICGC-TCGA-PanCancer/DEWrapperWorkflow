@@ -32,7 +32,7 @@ The workflow is hosted on DockerHub and source in git.  Version 1.3.0 was tagged
 
 #### DKFZ
 
-The version for DKFZ below is 1.0.132-2 and this is what we recommend using from the tarball.  However, the output files from this Docker image actually contain the string "1.0.132-1".  So in the workflow.properties this earlier release string is used and referred to via the DEWrapper workflow.
+The version for DKFZ below is Roddy_2.2.49_COW_1.0.132-1_CNE_1.0.189.  However, the output files from this Docker image actually contain the string "1.0.132-1".  So in the workflow.properties this earlier release string is used and referred to via the DEWrapper workflow.
 
 
 ### Worker Host Docker Image Pull from DockerHub
