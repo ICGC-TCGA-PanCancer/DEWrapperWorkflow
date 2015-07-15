@@ -2,6 +2,11 @@
 
 ## TODO
 
+* need to correctly combine the timing and QC json files
+* combined upload, now using a single upload for DKFZ and EMBL sub-workflows, the official name is EMBLDKFZPancancerStrCnIndelSNV
+* fixed a bug where upload server was used for the metadata URLs, actually needed to be download server
+* any need to modify the workflow to support downloading from different GNOS repos per specimen?
+
 * need to use --uuid and other params to link two uploads to each other
 * I think both the Delly and DKFZ docker containers will need to be revised to deal with multiple tumors
 * create an uber-workflow
