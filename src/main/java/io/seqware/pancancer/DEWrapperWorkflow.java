@@ -187,10 +187,6 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
                 cleanupBams = Boolean.valueOf(getProperty("cleanupBams"));
             }
 
-            // workflow options
-            if (hasPropertyAndNotNull("runDkfz")) {
-                runDkfz = Boolean.valueOf(getProperty("runDkfz"));
-            }
             /*
              * if(hasPropertyAndNotNull("runEmbl")) { runEmbl=Boolean.valueOf(getProperty("runEmbl")); }
              */
