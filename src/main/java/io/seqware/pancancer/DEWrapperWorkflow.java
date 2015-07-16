@@ -334,7 +334,6 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
 
         // FIXME: really just need one timing file not broken down by tumorAliquotID! This will be key for multi-tumor donors
         String qcJson = null;
-        String qcJsonSingle = null;
         String timingJson = null;
 
         // FIXME: these don't quite follow the naming convention
@@ -388,6 +387,7 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
 
             // DKFZ FILES
             // String baseFile = "/workflow_data/" + tumorAliquotId + ".dkfz-";
+
             baseFile = tumorAliquotId + ".dkfz-";
 
             timingJson = "./shared_workspace/results/timing.json";
@@ -443,10 +443,10 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         Job uploadJob = this.getWorkflow().createBashJob("upload");
 
         // cleanup JSON to make single line, combine JSON
-        uploadJob.getCommand().addArgument(
-                "cat " + SHARED_WORKSPACE + "/results/" + qcJson + " | perl -p -e 's/\\n/ /g' > " + SHARED_WORKSPACE + "/results/"
-                        + qcJsonSingle + " \n");
-
+        String summaryQcJSON = "summary_qc.json";
+        uploadJob.getCommand().addArgument("perl " + this.getWorkflowBaseDir() + "/scripts/prep_json.pl "+Joiner.on(" ").join(qcFiles) +" > " + summaryQcJSON + "\n");
+        String summaryTimingJSON = "summary_timing.json";
+        uploadJob.getCommand().addArgument("perl " + this.getWorkflowBaseDir() + "/scripts/prep_json.pl "+Joiner.on(" ").join(timingFiles) +" > " + summaryTimingJSON + "\n");
 
         // move the Delly results into the results folder to mix with DKFZ
         uploadJob.getCommand().addArgument("mv "+SHARED_WORKSPACE_ABSOLUTE+"/*." + Version.EMBL_WORKFLOW_SHORT_NAME_VERSION + "." + formattedDate + "* " + DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/\n");
@@ -461,13 +461,12 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         }
         // Now do the upload based on the destination chosen
         // NOTE: I'm using the wrapper workflow version here so it's immediately obvious what wrapper was used
-        // TODO: DKFZ_RESULT_DIRECTORY_ABSOLUTE for DKFZ!!
         if (LOCAL.equalsIgnoreCase(uploadDestination)) {
 
             // using hard links so it spans multiple exported filesystems to Docker
             uploadJob = utils.localUploadJob(uploadJob, DKFZ_RESULT_DIRECTORY_ABSOLUTE, pemFile, metadataURLs, vcfs, vcfmd5s, tbis, tbimd5s,
                     tars, tarmd5s, uploadServer, Version.SEQWARE_VERSION, vmInstanceType, vmLocationCode, overrideTxt.toString(),
-                    UPLOAD_ARCHIVE_IN_CONTAINER, gnosTimeoutMin, gnosRetries, qcJson, timingJson, Version.WORKFLOW_SRC_URL,
+                    UPLOAD_ARCHIVE_IN_CONTAINER, gnosTimeoutMin, gnosRetries, summaryQcJSON, summaryTimingJSON, Version.WORKFLOW_SRC_URL,
                     Version.WORKFLOW_URL, Version.WORKFLOW_NAME, Version.WORKFLOW_VERSION, gnosDownloadName,
                     this.localXMLMetadataPath, this.localXMLMetadataFiles);
 
@@ -475,14 +474,14 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
 
             uploadJob = utils.gnosUploadJob(uploadJob, DKFZ_RESULT_DIRECTORY_ABSOLUTE, pemFile, metadataURLs, vcfs, vcfmd5s, tbis, tbimd5s,
                     tars, tarmd5s, uploadServer, Version.SEQWARE_VERSION, vmInstanceType, vmLocationCode, overrideTxt.toString(),
-                    gnosTimeoutMin, gnosRetries, qcJson, timingJson, Version.WORKFLOW_SRC_URL,
+                    gnosTimeoutMin, gnosRetries, summaryQcJSON, summaryTimingJSON, Version.WORKFLOW_SRC_URL,
                     Version.WORKFLOW_URL, Version.WORKFLOW_NAME, Version.WORKFLOW_VERSION, gnosDownloadName);
 
         } else if (S3.equalsIgnoreCase(uploadDestination)) {
 
             uploadJob = utils.s3UploadJob(uploadJob, DKFZ_RESULT_DIRECTORY_ABSOLUTE, pemFile, metadataURLs, vcfs, vcfmd5s, tbis, tbimd5s, tars,
                     tarmd5s, uploadServer, Version.SEQWARE_VERSION, vmInstanceType, vmLocationCode, overrideTxt.toString(),
-                    UPLOAD_ARCHIVE_IN_CONTAINER, s3Key, s3SecretKey, uploadS3BucketPath, gnosTimeoutMin, gnosRetries, qcJson, timingJson,
+                    UPLOAD_ARCHIVE_IN_CONTAINER, s3Key, s3SecretKey, uploadS3BucketPath, gnosTimeoutMin, gnosRetries, summaryQcJSON, summaryTimingJSON,
                     Version.WORKFLOW_SRC_URL, Version.WORKFLOW_URL, Version.WORKFLOW_NAME,  Version.WORKFLOW_VERSION,
                     gnosDownloadName);
 
