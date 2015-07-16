@@ -4,7 +4,7 @@
 
 * PROBLEM, the CNV VCF seems to be missing from DKFZ!
 * need to change the INI to have the correct release numbers
-* need to correctly combine the timing and QC json files
+* need to correctly combine the timing and QC json files, so it now supports the merged upload but also multi-tumor statistics collection
 * combined upload, now using a single upload for DKFZ and EMBL sub-workflows, the official name is EMBLDKFZPancancerStrCnIndelSNV
 * fixed a bug where upload server was used for the metadata URLs, actually needed to be download server
 * any need to modify the workflow to support downloading from different GNOS repos per specimen?
