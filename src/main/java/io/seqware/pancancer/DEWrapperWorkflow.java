@@ -329,6 +329,8 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         List<String> vcfmd5s = new ArrayList<>();
         List<String> tbimd5s = new ArrayList<>();
         List<String> tarmd5s = new ArrayList<>();
+        List<String> qcFiles = new ArrayList<>();
+        List<String> timingFiles = new ArrayList<>();
 
         // FIXME: really just need one timing file not broken down by tumorAliquotID! This will be key for multi-tumor donors
         String qcJson = null;
@@ -340,10 +342,14 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
 
             // DELLY FILES
             // String baseFile = "/workflow_data/" + tumorAliquotId + ".embl-delly_1-0-0-preFilter."+formattedDate;
-            String baseFile = tumorAliquotId + ".embl-delly_1-3-0-preFilter." + formattedDate;
+            String baseFile = tumorAliquotId + "." + Version.EMBL_WORKFLOW_SHORT_NAME_VERSION + "." + formattedDate;
 
             qcJson = "`find . | grep " + baseFile + ".sv.qc.json | head -1`";
             timingJson = "`find . | grep " + baseFile + ".sv.timing.json | head -1`";
+
+            // now add these to a list
+            qcFiles.add("embl_qc_"+tumorAliquotId); qcFiles.add(qcJson);
+            timingFiles.add("embl_timing_"+tumorAliquotId); timingFiles.add(timingJson);
 
             vcfs.add(baseFile + ".germline.sv.vcf.gz");
             vcfs.add(baseFile + ".sv.vcf.gz");
@@ -384,52 +390,67 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
             // String baseFile = "/workflow_data/" + tumorAliquotId + ".dkfz-";
             baseFile = tumorAliquotId + ".dkfz-";
 
-            qcJson = tumorAliquotId + ".qc_metrics.dkfz.json";
-            qcJsonSingle = tumorAliquotId + ".qc_metrics.dkfz.single.json";
-            timingJson = "timing.json";
+            timingJson = "./shared_workspace/results/timing.json";
+
+            // now add these to a list
+            qcFiles.add("dkfz_qc_indel_"+tumorAliquotId); qcFiles.add(DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/" + baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + "." + ".indel.json");
+            qcFiles.add("dkfz_qc_snv_mnv_"+tumorAliquotId); qcFiles.add(DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/" + baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + "." + ".snv_mnv.json");
+            // PROBLEM: this is missing!!!
+            qcFiles.add("dkfz_qc_cnv_"+tumorAliquotId); qcFiles.add(DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/" + baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + "." + ".cnv.gcbias.json");
+            timingFiles.add("global_timing_"+tumorAliquotId); timingFiles.add(timingJson);
 
             // VCF
-            vcfs.add(baseFile + "indelCalling_" + DKFZ_VERSION + "." + formattedDate + ".germline.indel.vcf.gz");
-            vcfs.add(baseFile + "indelCalling_" + DKFZ_VERSION + "." + formattedDate + ".somatic.indel.vcf.gz");
-            vcfs.add(baseFile + "snvCalling_" + DKFZ_VERSION + "." + formattedDate + ".germline.snv_mnv.vcf.gz");
-            vcfs.add(baseFile + "snvCalling_" + DKFZ_VERSION + "." + formattedDate + ".somatic.snv_mnv.vcf.gz");
-            vcfs.add(baseFile + "copyNumberEstimation_" + DKFZ_VERSION + "." + formattedDate + ".somatic.cnv.vcf.gz");
+            vcfs.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.indel.vcf.gz");
+            vcfs.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz");
+            vcfs.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.snv_mnv.vcf.gz");
+            vcfs.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.snv_mnv.vcf.gz");
+            vcfs.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz");
 
             // VCF MD5
-            vcfmd5s.add(baseFile + "indelCalling_" + DKFZ_VERSION + "." + formattedDate + ".germline.indel.vcf.gz.md5");
-            vcfmd5s.add(baseFile + "indelCalling_" + DKFZ_VERSION + "." + formattedDate + ".somatic.indel.vcf.gz.md5");
-            vcfmd5s.add(baseFile + "snvCalling_" + DKFZ_VERSION + "." + formattedDate + ".germline.snv_mnv.vcf.gz.md5");
-            vcfmd5s.add(baseFile + "snvCalling_" + DKFZ_VERSION + "." + formattedDate + ".somatic.snv_mnv.vcf.gz.md5");
-            vcfmd5s.add(baseFile + "copyNumberEstimation_" + DKFZ_VERSION + "." + formattedDate + ".somatic.cnv.vcf.gz.md5");
+            vcfmd5s.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.indel.vcf.gz.md5");
+            vcfmd5s.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.md5");
+            vcfmd5s.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.snv_mnv.vcf.gz.md5");
+            vcfmd5s.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.snv_mnv.vcf.gz.md5");
+            vcfmd5s.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz.md5");
 
             // Tabix
-            tbis.add(baseFile + "indelCalling_" + DKFZ_VERSION + "." + formattedDate + ".somatic.indel.vcf.gz.tbi");
-            tbis.add(baseFile + "indelCalling_" + DKFZ_VERSION + "." + formattedDate + ".somatic.indel.vcf.gz.tbi");
-            tbis.add(baseFile + "snvCalling_" + DKFZ_VERSION + "." + formattedDate + ".germline.snv_mnv.vcf.gz.tbi");
-            tbis.add(baseFile + "snvCalling_" + DKFZ_VERSION + "." + formattedDate + ".somatic.snv_mnv.vcf.gz.tbi");
-            tbis.add(baseFile + "copyNumberEstimation_" + DKFZ_VERSION + "." + formattedDate + ".somatic.cnv.vcf.gz.tbi");
+            tbis.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.tbi");
+            tbis.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.tbi");
+            tbis.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.snv_mnv.vcf.gz.tbi");
+            tbis.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.snv_mnv.vcf.gz.tbi");
+            tbis.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz.tbi");
 
             // Tabix MD5
-            tbimd5s.add(baseFile + "indelCalling_" + DKFZ_VERSION + "." + formattedDate + ".somatic.indel.vcf.gz.tbi.md5");
-            tbimd5s.add(baseFile + "indelCalling_" + DKFZ_VERSION + "." + formattedDate + ".somatic.indel.vcf.gz.tbi.md5");
-            tbimd5s.add(baseFile + "snvCalling_" + DKFZ_VERSION + "." + formattedDate + ".germline.snv_mnv.vcf.gz.tbi.md5");
-            tbimd5s.add(baseFile + "snvCalling_" + DKFZ_VERSION + "." + formattedDate + ".somatic.snv_mnv.vcf.gz.tbi.md5");
-            tbimd5s.add(baseFile + "copyNumberEstimation_" + DKFZ_VERSION + "." + formattedDate + ".somatic.cnv.vcf.gz.tbi.md5");
+            tbimd5s.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.tbi.md5");
+            tbimd5s.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.tbi.md5");
+            tbimd5s.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.snv_mnv.vcf.gz.tbi.md5");
+            tbimd5s.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.snv_mnv.vcf.gz.tbi.md5");
+            tbimd5s.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz.tbi.md5");
 
             // Tarballs
-            tars.add(baseFile + "copyNumberEstimation_" + DKFZ_VERSION + "." + formattedDate + ".somatic.cnv.tar.gz");
-            tars.add(baseFile + "indelCalling_" + DKFZ_VERSION + "." + formattedDate + ".somatic.indel.tar.gz");
-            tars.add(baseFile + "snvCalling_" + DKFZ_VERSION + "." + formattedDate + ".somatic.snv_mnv.tar.gz");
+            tars.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.tar.gz");
+            tars.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.tar.gz");
+            tars.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.snv_mnv.tar.gz");
 
             // Tarballs MD5
-            tarmd5s.add(baseFile + "copyNumberEstimation_" + DKFZ_VERSION + "." + formattedDate + ".somatic.cnv.tar.gz.md5");
-            tarmd5s.add(baseFile + "indelCalling_" + DKFZ_VERSION + "." + formattedDate + ".somatic.indel.tar.gz.md5");
-            tarmd5s.add(baseFile + "snvCalling_" + DKFZ_VERSION + "." + formattedDate + ".somatic.snv_mnv.tar.gz.md5");
+            tarmd5s.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.tar.gz.md5");
+            tarmd5s.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.tar.gz.md5");
+            tarmd5s.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.snv_mnv.tar.gz.md5");
 
         }
         // perform upload to GNOS
         // FIXME: hardcoded versions, URLs, etc
         Job uploadJob = this.getWorkflow().createBashJob("upload");
+
+        // cleanup JSON to make single line, combine JSON
+        uploadJob.getCommand().addArgument(
+                "cat " + SHARED_WORKSPACE + "/results/" + qcJson + " | perl -p -e 's/\\n/ /g' > " + SHARED_WORKSPACE + "/results/"
+                        + qcJsonSingle + " \n");
+
+
+        // move the Delly results into the results folder to mix with DKFZ
+        uploadJob.getCommand().addArgument("mv "+SHARED_WORKSPACE_ABSOLUTE+"/*." + Version.EMBL_WORKFLOW_SHORT_NAME_VERSION + "." + formattedDate + "* " + DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/\n");
+
         // params
         StringBuilder overrideTxt = new StringBuilder();
         if (this.studyRefnameOverride != null) {
@@ -440,10 +461,11 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         }
         // Now do the upload based on the destination chosen
         // NOTE: I'm using the wrapper workflow version here so it's immediately obvious what wrapper was used
+        // TODO: DKFZ_RESULT_DIRECTORY_ABSOLUTE for DKFZ!!
         if (LOCAL.equalsIgnoreCase(uploadDestination)) {
 
             // using hard links so it spans multiple exported filesystems to Docker
-            uploadJob = utils.localUploadJob(uploadJob, SHARED_WORKSPACE_ABSOLUTE, pemFile, metadataURLs, vcfs, vcfmd5s, tbis, tbimd5s,
+            uploadJob = utils.localUploadJob(uploadJob, DKFZ_RESULT_DIRECTORY_ABSOLUTE, pemFile, metadataURLs, vcfs, vcfmd5s, tbis, tbimd5s,
                     tars, tarmd5s, uploadServer, Version.SEQWARE_VERSION, vmInstanceType, vmLocationCode, overrideTxt.toString(),
                     UPLOAD_ARCHIVE_IN_CONTAINER, gnosTimeoutMin, gnosRetries, qcJson, timingJson, Version.WORKFLOW_SRC_URL,
                     Version.WORKFLOW_URL, Version.WORKFLOW_NAME, Version.WORKFLOW_VERSION, gnosDownloadName,
@@ -451,14 +473,14 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
 
         } else if (GNOS.equalsIgnoreCase(uploadDestination)) {
 
-            uploadJob = utils.gnosUploadJob(uploadJob, SHARED_WORKSPACE_ABSOLUTE, pemFile, metadataURLs, vcfs, vcfmd5s, tbis, tbimd5s,
+            uploadJob = utils.gnosUploadJob(uploadJob, DKFZ_RESULT_DIRECTORY_ABSOLUTE, pemFile, metadataURLs, vcfs, vcfmd5s, tbis, tbimd5s,
                     tars, tarmd5s, uploadServer, Version.SEQWARE_VERSION, vmInstanceType, vmLocationCode, overrideTxt.toString(),
                     gnosTimeoutMin, gnosRetries, qcJson, timingJson, Version.WORKFLOW_SRC_URL,
                     Version.WORKFLOW_URL, Version.WORKFLOW_NAME, Version.WORKFLOW_VERSION, gnosDownloadName);
 
         } else if (S3.equalsIgnoreCase(uploadDestination)) {
 
-            uploadJob = utils.s3UploadJob(uploadJob, SHARED_WORKSPACE_ABSOLUTE, pemFile, metadataURLs, vcfs, vcfmd5s, tbis, tbimd5s, tars,
+            uploadJob = utils.s3UploadJob(uploadJob, DKFZ_RESULT_DIRECTORY_ABSOLUTE, pemFile, metadataURLs, vcfs, vcfmd5s, tbis, tbimd5s, tars,
                     tarmd5s, uploadServer, Version.SEQWARE_VERSION, vmInstanceType, vmLocationCode, overrideTxt.toString(),
                     UPLOAD_ARCHIVE_IN_CONTAINER, s3Key, s3SecretKey, uploadS3BucketPath, gnosTimeoutMin, gnosRetries, qcJson, timingJson,
                     Version.WORKFLOW_SRC_URL, Version.WORKFLOW_URL, Version.WORKFLOW_NAME,  Version.WORKFLOW_VERSION,

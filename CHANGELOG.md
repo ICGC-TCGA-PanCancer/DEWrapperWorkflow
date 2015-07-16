@@ -2,6 +2,7 @@
 
 ## TODO
 
+* PROBLEM, the CNV VCF seems to be missing from DKFZ!
 * need to change the INI to have the correct release numbers
 * need to correctly combine the timing and QC json files
 * combined upload, now using a single upload for DKFZ and EMBL sub-workflows, the official name is EMBLDKFZPancancerStrCnIndelSNV
