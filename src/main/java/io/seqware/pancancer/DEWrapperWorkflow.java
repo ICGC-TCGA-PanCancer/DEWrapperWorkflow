@@ -384,6 +384,10 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
             tars.add(baseFile + ".sv.cov.tar.gz");
             tarmd5s.add(baseFile + ".sv.cov.tar.gz.md5");
 
+            // this is a new file
+            tars.add(baseFile + ".sv.log.tar.gz");
+            tarmd5s.add(baseFile + ".sv.log.tar.gz.md5");
+
 
             // DKFZ FILES
             // String baseFile = "/workflow_data/" + tumorAliquotId + ".dkfz-";
@@ -395,7 +399,6 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
             // now add these to a list
             qcFiles.add("dkfz_qc_indel_"+tumorAliquotId); qcFiles.add(DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/" + baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + "." + ".indel.json");
             qcFiles.add("dkfz_qc_snv_mnv_"+tumorAliquotId); qcFiles.add(DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/" + baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + "." + ".snv_mnv.json");
-            // PROBLEM: this is missing!!!
             qcFiles.add("dkfz_qc_cnv_"+tumorAliquotId); qcFiles.add(DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/" + baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + "." + ".cnv.gcbias.json");
             timingFiles.add("global_timing_"+tumorAliquotId); timingFiles.add(timingJson);
 
@@ -404,28 +407,32 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
             vcfs.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz");
             vcfs.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.snv_mnv.vcf.gz");
             vcfs.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.snv_mnv.vcf.gz");
-            vcfs.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz");
+            // MISSING
+            //vcfs.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz");
 
             // VCF MD5
             vcfmd5s.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.indel.vcf.gz.md5");
             vcfmd5s.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.md5");
             vcfmd5s.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.snv_mnv.vcf.gz.md5");
             vcfmd5s.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.snv_mnv.vcf.gz.md5");
-            vcfmd5s.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz.md5");
+            // MISSING
+            //vcfmd5s.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz.md5");
 
             // Tabix
             tbis.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.tbi");
             tbis.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.tbi");
             tbis.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.snv_mnv.vcf.gz.tbi");
             tbis.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.snv_mnv.vcf.gz.tbi");
-            tbis.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz.tbi");
+            // MISSING
+            //tbis.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz.tbi");
 
             // Tabix MD5
             tbimd5s.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.tbi.md5");
             tbimd5s.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.tbi.md5");
             tbimd5s.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.snv_mnv.vcf.gz.tbi.md5");
             tbimd5s.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.snv_mnv.vcf.gz.tbi.md5");
-            tbimd5s.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz.tbi.md5");
+            // MISSINNG
+            //tbimd5s.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz.tbi.md5");
 
             // Tarballs
             tars.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.tar.gz");
@@ -444,9 +451,9 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
 
         // cleanup JSON to make single line, combine JSON
         String summaryQcJSON = "summary_qc.json";
-        uploadJob.getCommand().addArgument("perl " + this.getWorkflowBaseDir() + "/scripts/prep_json.pl "+Joiner.on(" ").join(qcFiles) +" > " + summaryQcJSON + "\n");
+        uploadJob.getCommand().addArgument("perl " + this.getWorkflowBaseDir() + "/scripts/prep_json.pl "+Joiner.on(" ").join(qcFiles) +" > " + DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/" + summaryQcJSON + "\n");
         String summaryTimingJSON = "summary_timing.json";
-        uploadJob.getCommand().addArgument("perl " + this.getWorkflowBaseDir() + "/scripts/prep_json.pl "+Joiner.on(" ").join(timingFiles) +" > " + summaryTimingJSON + "\n");
+        uploadJob.getCommand().addArgument("perl " + this.getWorkflowBaseDir() + "/scripts/prep_json.pl "+Joiner.on(" ").join(timingFiles) +" > " + DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/" + summaryTimingJSON + "\n");
 
         // move the Delly results into the results folder to mix with DKFZ
         uploadJob.getCommand().addArgument("mv "+SHARED_WORKSPACE_ABSOLUTE+"/*." + Version.EMBL_WORKFLOW_SHORT_NAME_VERSION + "." + formattedDate + "* " + DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/\n");

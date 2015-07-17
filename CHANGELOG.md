@@ -2,7 +2,8 @@
 
 ## TODO
 
-* PROBLEM, the CNV VCF seems to be missing from DKFZ!
+* set the plotting code to <60G RAM
+* PROBLEM, the CNV VCF seems to be missing from DKFZ!  *.somatic.cnv.vcf.gz*
 * need to change the INI to have the correct release numbers
 * need to correctly combine the timing and QC json files, so it now supports the merged upload but also multi-tumor statistics collection
 * combined upload, now using a single upload for DKFZ and EMBL sub-workflows, the official name is EMBLDKFZPancancerStrCnIndelSNV
