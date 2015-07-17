@@ -4,6 +4,10 @@ This is intended to wrap the DKFZ and EMBL workflows as a SeqWare workflow and a
 
 Unlike previous workflows, there is now a central decider that generates INIs from a de-duplicated central index hosted on PanCancer.info.  This should be much more reliable than the distributed deciders used previously.  For more information see the [central-decider-client](https://github.com/ICGC-TCGA-PanCancer/central-decider-client).
 
+For information on setting this workflow up in the context of a larger cloud of worker VMs provisioned and managed by a central launcher the doles out work from the INIs generated with the central decider, see our documentation [here](https://github.com/ICGC-TCGA-PanCancer/pancancer-documentation).
+
+That infrastructure linked above is complex.  What follows are sufficient instructions for runing the workflow manually on a single box.  This is helpful for testing and/or small-scale runs.
+
 [![Build Status](https://travis-ci.org/ICGC-TCGA-PanCancer/DEWrapperWorkflow.svg?branch=develop)](https://travis-ci.org/ICGC-TCGA-PanCancer/DEWrapperWorkflow)
 
 ## Contact
