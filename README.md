@@ -146,13 +146,14 @@ You can use Adam's tool for generating many INI files, one per donor, and it tak
 The INI files let you control many functions of the workflow.  Here are some of the most important and some that are 
 useful but difficult to understand.
 
-#### Important variables for 1.0.1+
+#### Important Variables
 
-Please specify the following to fix your container versions. This mechanism is also how we will release new sub-components:
+Please note the following container versions. This mechanism is also how we will release new sub-components but generally these are fixed for a release of the DEWrapper workflow since the interface may change:
 
     dkfzDockerName=pancancer/dkfz_dockered_workflows
-    emblDockerName=pancancer/pcawg-delly-workflow:1.0
-    gnosDockerName=pancancer/pancancer_upload_download:1.1
+    emblDockerName=pancancer/pcawg-delly-workflow:1.3
+    gnosDockerName=pancancer/pancancer_upload_download:1.2
+
 
 #### Core variables that change per workflow
 
@@ -172,20 +173,6 @@ The INI contains several important variables that change from donor run to donor
         EMBL.input_bam_path_tumor=inputs/ef26d046-e88a-4f21-a232-16ccb43637f2
         EMBL.input_bam_path_germ=inputs/1b9215ab-3634-4108-9db7-7e63139ef7e9
         
-        
-## Running With an alternate datastore path
-
-There are three components to this currently, the first docker container is started with the following
-
-    docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock -v /not-datastore:/not-datastore  -v /workflows:/workflows -v `pwd`/different_dirs_workflow.ini:/workflow.ini -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem seqware/seqware_whitestar_pancancer:1.1.1  bash -c "sed -i 's/datastore/not-datastore/g' /home/seqware/.seqware/settings ; seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.5_SeqWare_1.1.1 --engine whitestar --no-metadata --ini /workflow.ini"
-
-First, for the section "-v /not-datastore:/not-datastore". Make sure that you match the path inside and outside the container. i.e. do not use something like "-v  /not-datastore:/datastore". If they do not match then the current workflow will fail, having created directories in the wrong locations. 
-
-Second, SeqWare needs to be informed to do its work in the new directory. That's the portion of the command "sed -i 's/datastore/not-datastore/g' /home/seqware/.seqware/settings". Otherwise, SeqWare will do its work in its default working directory of /datastore which is now solely within the container and will now disappear after the container stops.
-
-Note that "/not-datastore" is arbitrary and can be changed on your system.
-
-Third, "common\_data\_dir" is the ini parameter that needs to be changed to reflect the alternate path. The default ini file which lists all possible parameters is currently at https://github.com/ICGC-TCGA-PanCancer/DEWrapperWorkflow/blob/develop/workflow/config/DEWrapperWorkflow.ini#L44
         
 #### File modes
 
@@ -318,6 +305,20 @@ if your worker nodes/VMs are long-lived.  In this case the variant call files le
 
         cleanup=false
         cleanupBams=false
+
+### Running With an alternate datastore path
+
+There are three components to this currently, the first docker container is started with the following
+
+    docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock -v /not-datastore:/not-datastore  -v /workflows:/workflows -v `pwd`/different_dirs_workflow.ini:/workflow.ini -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem seqware/seqware_whitestar_pancancer:1.1.1  bash -c "sed -i 's/datastore/not-datastore/g' /home/seqware/.seqware/settings ; seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.5_SeqWare_1.1.1 --engine whitestar --no-metadata --ini /workflow.ini"
+
+First, for the section "-v /not-datastore:/not-datastore". Make sure that you match the path inside and outside the container. i.e. do not use something like "-v  /not-datastore:/datastore". If they do not match then the current workflow will fail, having created directories in the wrong locations. 
+
+Second, SeqWare needs to be informed to do its work in the new directory. That's the portion of the command "sed -i 's/datastore/not-datastore/g' /home/seqware/.seqware/settings". Otherwise, SeqWare will do its work in its default working directory of /datastore which is now solely within the container and will now disappear after the container stops.
+
+Note that "/not-datastore" is arbitrary and can be changed on your system.
+
+Third, "common\_data\_dir" is the ini parameter that needs to be changed to reflect the alternate path. The default ini file which lists all possible parameters is currently at https://github.com/ICGC-TCGA-PanCancer/DEWrapperWorkflow/blob/develop/workflow/config/DEWrapperWorkflow.ini#L44
 
 #### Retry Options
 
