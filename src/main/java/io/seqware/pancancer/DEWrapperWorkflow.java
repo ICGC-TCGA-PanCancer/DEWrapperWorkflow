@@ -397,9 +397,9 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
             timingJson = "./shared_workspace/results/timing.json";
 
             // now add these to a list
-            qcFiles.add("dkfz_qc_indel_"+tumorAliquotId); qcFiles.add(DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/" + baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + "." + ".indel.json");
-            qcFiles.add("dkfz_qc_snv_mnv_"+tumorAliquotId); qcFiles.add(DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/" + baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + "." + ".snv_mnv.json");
-            qcFiles.add("dkfz_qc_cnv_"+tumorAliquotId); qcFiles.add(DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/" + baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + "." + ".cnv.gcbias.json");
+            qcFiles.add("dkfz_qc_indel_"+tumorAliquotId); qcFiles.add(DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/" + baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".indel.json");
+            qcFiles.add("dkfz_qc_snv_mnv_"+tumorAliquotId); qcFiles.add(DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/" + baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".snv_mnv.json");
+            qcFiles.add("dkfz_qc_cnv_"+tumorAliquotId); qcFiles.add(DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/" + baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".cnv.gcbias.json");
             timingFiles.add("global_timing_"+tumorAliquotId); timingFiles.add(timingJson);
 
             // VCF
