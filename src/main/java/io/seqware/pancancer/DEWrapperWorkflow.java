@@ -455,8 +455,8 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         String summaryTimingJSON = "summary_timing.json";
         uploadJob.getCommand().addArgument("perl " + this.getWorkflowBaseDir() + "/scripts/prep_json.pl "+Joiner.on(" ").join(timingFiles) +" > " + DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/" + summaryTimingJSON + "\n");
 
-        // move the Delly results into the results folder to mix with DKFZ
-        uploadJob.getCommand().addArgument("mv "+SHARED_WORKSPACE_ABSOLUTE+"/*." + Version.EMBL_WORKFLOW_SHORT_NAME_VERSION + "." + formattedDate + "* " + DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/\n");
+        // copy the Delly results into the results folder to mix with DKFZ
+        uploadJob.getCommand().addArgument("cp "+SHARED_WORKSPACE_ABSOLUTE+"/*." + Version.EMBL_WORKFLOW_SHORT_NAME_VERSION + "." + formattedDate + "* " + DKFZ_RESULT_DIRECTORY_ABSOLUTE + "/\n");
 
         // params
         StringBuilder overrideTxt = new StringBuilder();
