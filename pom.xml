@@ -157,6 +157,14 @@
                         <value>${dkfz-workflow-src-url}</value>
                     </replacement>
                     <replacement>
+                        <token>@dkfz-snv-indel-workflow-version-underscore@</token>
+                        <value>${dkfz-snv-indel-workflow-version-underscore}</value>
+                    </replacement>
+                    <replacement>
+                        <token>@dkfz-cnv-workflow-version-underscore@</token>
+                        <value>${dkfz-cnv-workflow-version-underscore}</value>
+                    </replacement>
+                    <replacement>
                         <token>@embl-workflow-name@</token>
                         <value>${embl-workflow-name}</value>
                     </replacement>
