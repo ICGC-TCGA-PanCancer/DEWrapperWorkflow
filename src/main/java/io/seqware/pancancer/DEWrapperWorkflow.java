@@ -407,32 +407,28 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
             vcfs.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz");
             vcfs.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.snv_mnv.vcf.gz");
             vcfs.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.snv_mnv.vcf.gz");
-            // MISSING
-            //vcfs.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz");
+            vcfs.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz");
 
             // VCF MD5
             vcfmd5s.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.indel.vcf.gz.md5");
             vcfmd5s.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.md5");
             vcfmd5s.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.snv_mnv.vcf.gz.md5");
             vcfmd5s.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.snv_mnv.vcf.gz.md5");
-            // MISSING
-            //vcfmd5s.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz.md5");
+            vcfmd5s.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz.md5");
 
             // Tabix
             tbis.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.tbi");
             tbis.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.tbi");
             tbis.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.snv_mnv.vcf.gz.tbi");
             tbis.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.snv_mnv.vcf.gz.tbi");
-            // MISSING
-            //tbis.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz.tbi");
+            tbis.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz.tbi");
 
             // Tabix MD5
             tbimd5s.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.tbi.md5");
             tbimd5s.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.tbi.md5");
             tbimd5s.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.snv_mnv.vcf.gz.tbi.md5");
             tbimd5s.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.snv_mnv.vcf.gz.tbi.md5");
-            // MISSINNG
-            //tbimd5s.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz.tbi.md5");
+            tbimd5s.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz.tbi.md5");
 
             // Tarballs
             tars.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.tar.gz");
@@ -620,7 +616,7 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         // tumor delly files
         List<String> tumorDelly = new ArrayList<>();
         for (String tumorAliquotId : tumorAliquotIds) {
-            tumorDelly.add("/mnt/datastore/workflow_data/inputdata/" + tumorAliquotId + ".embl-delly_1-0-0-preFilter." + formattedDate
+            tumorDelly.add("/mnt/datastore/workflow_data/inputdata/" + tumorAliquotId + "." + Version.EMBL_WORKFLOW_SHORT_NAME_VERSION + "." + formattedDate
                     + ".somatic.sv.bedpe.txt");
         }
 
@@ -640,9 +636,9 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
             String analysisId = tumorAnalysisIds.get(i);
             mounts.append(" -v " + SHARED_WORKSPACE_ABSOLUTE + "/inputs/").append(analysisId)
                     .append(":/mnt/datastore/workflow_data/inputdata/").append(analysisId).append(" ");
-            mounts.append(" -v " + SHARED_WORKSPACE_ABSOLUTE + "/").append(aliquotId).append(".embl-delly_1-0-0-preFilter.")
+            mounts.append(" -v " + SHARED_WORKSPACE_ABSOLUTE + "/").append(aliquotId).append("."+Version.EMBL_WORKFLOW_SHORT_NAME_VERSION+".")
                     .append(formattedDate).append(".somatic.sv.bedpe.txt:/mnt/datastore/workflow_data/inputdata/").append(aliquotId)
-                    .append(".embl-delly_1-0-0-preFilter.").append(formattedDate).append(".somatic.sv.bedpe.txt ");
+                    .append("." + Version.EMBL_WORKFLOW_SHORT_NAME_VERSION + ".").append(formattedDate).append(".somatic.sv.bedpe.txt ");
         }
         // now deal with the control
         mounts.append(" -v " + SHARED_WORKSPACE_ABSOLUTE + "/inputs/").append(controlAnalysisId)
