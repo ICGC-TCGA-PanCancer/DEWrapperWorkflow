@@ -23,7 +23,7 @@ sub read_json {
     my $out = "";
     open IN, '<', $file or die "CANNOT OPEN FILE: '$file'\n";
     while (<IN>) {
-      $_ ~= s/\n/ /g;
+      $_ =~ s/\n/ /g;
       $out .= $_;
     }
 
