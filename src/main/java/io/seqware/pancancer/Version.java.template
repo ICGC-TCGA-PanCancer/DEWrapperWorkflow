@@ -32,6 +32,11 @@ public class Version {
 
     public static final String DKFZ_WORKFLOW_VERSION_UNDERSCORE="@dkfz-workflow-version-underscore@";
 
+    public static final String DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE="@dkfz-snv-indel-workflow-version-underscore@";
+
+    public static final String DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE="@dkfz-cnv-workflow-version-underscore@";
+
+
     public static final String DKFZ_WORKFLOW_VERSION="@dkfz-workflow-version@";
 
     public static final String DKFZ_WORKFLOW_URL="@dkfz-workflow-url@";
