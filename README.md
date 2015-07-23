@@ -31,7 +31,7 @@ Here is how you install Docker on Ubuntu 14.04, see the Docker [website](https:/
 
 ### Note About Workflow Versions
 
-It's complicated.  The workflows have versions, the underlying tools have versions, and the Docker images built with the previous two have versions.  Also this wrapper workflow itself has a version.  For the purposes of uploads we use this DEWrapper workflow version as the data upload version.  However keep in mind
+It's complicated.  The workflows have versions, the underlying tools have versions, and the Docker images built with these tools and workflows have versions.  Also this wrapper workflow itself has a version.  For the purposes of uploads we use this DEWrapper workflow version as the data upload version.  However keep in mind
  two things about the EMBL and DKFZ pipeline outputs respectively:
 
 #### EMBL
@@ -40,7 +40,7 @@ The workflow is hosted on DockerHub and source in git.  Version 1.3.0 was tagged
 
 #### DKFZ
 
-The version for DKFZ below is Roddy_2.2.49_COW_1.0.132-1_CNE_1.0.189.  The output files from this Docker image actually contain the strings "1-0-189" or "1-0-132-1". 
+The DKFZ system is hosted in github but can't be built without a controlled access Roddy binary. Version 1.3.0 was tagged in git and is focused on multi-tumor support.  The underlying version for Roddy is Roddy_2.2.49_COW_1.0.132-1_CNE_1.0.189.  The output files from this Docker image actually contain the strings "1-0-189" or "1-0-132-1".
 
 ### Docker Image Pull from DockerHub
 
@@ -70,12 +70,14 @@ See the [README](https://github.com/SeqWare/docker/tree/develop/dkfz_dockered_wo
 
         cd ~/gitroot/dkfz_dockered_workflows/
         # you need to download the Roddy binary, untar/gz, and move the Roddy directory into the current git checkout dir
-        docker build -t pancancer/dkfz_dockered_workflows .
+        docker build -t pancancer/dkfz_dockered_workflows:1.3 .
         Successfully built 0805f987f138
         # you can list it out using...
         ubuntu@ip-10-169-171-198:~/gitroot/docker/dkfz_dockered_workflows$ docker images
         REPOSITORY                          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
-        pancancer/dkfz_dockered_workflows   latest              0805f987f138        8 seconds ago       1.63 GB
+        pancancer/dkfz_dockered_workflows   1.3                 0805f987f138        8 seconds ago       1.63 GB
+
+Notice the tag here is set to 1.3 if the 1.3 tag from the DKFZ git repo is used to build this.  Update this value if building from a new tag.
 
 ### Directory Setup and Dependency Installs
 
