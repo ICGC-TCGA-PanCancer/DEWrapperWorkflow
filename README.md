@@ -66,7 +66,7 @@ You need to get and build the DKFZ workflow since we are not allowed to redistri
 
         git clone https://github.com/ICGC-TCGA-PanCancer/dkfz_dockered_workflows.git
 
-See the [README](https://github.com/SeqWare/docker/tree/develop/dkfz_dockered_workflows) for how to downloading Roddy bundles of data/binaries and build this Docker image.
+See the [README](https://github.com/ICGC-TCGA-PanCancer/dkfz_dockered_workflows) for how to downloading Roddy bundles of data/binaries and build this Docker image.
 
         cd ~/gitroot/dkfz_dockered_workflows/
         # you need to download the Roddy binary, untar/gz, and move the Roddy directory into the current git checkout dir
