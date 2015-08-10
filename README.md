@@ -135,7 +135,8 @@ The command to execute the workflow is *(This assumes are you using the containe
                   pancancer/pcawg-dewrapper-workflow:1.0.6 \
                   seqware bundle launch --dir /workflow/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata
 
-**NOTE** If you are **not** using the container `pancancer/pcawg-dewrapper-workflow:1.0.6`, you will need to use this command:
+**NOTE:**
+If you are **not** using the container `pancancer/pcawg-dewrapper-workflow:1.0.6`, you will need to use this command:
 
       docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock \
                                     -v /datastore:/datastore \
@@ -160,17 +161,19 @@ If you want to run with a specific INI:
                                       -v /datastore:/datastore \
                                       -v `pwd`/workflow.ini:/workflow.ini \
                                       -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem \
-                    seqware bundle launch --dir /workflow/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata --ini /workflow.ini
                     pancancer/pcawg-dewrapper-workflow:1.0.6 \
+                      seqware bundle launch --dir /workflow/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata --ini /workflow.ini
 
-**NOTE** If you are **not** using the container `pancancer/pcawg-dewrapper-workflow:1.0.6`, you will need to use this command to execute the workflow:
+**NOTE:**
+If you are **not** using the container `pancancer/pcawg-dewrapper-workflow:1.0.6`, you will need to use this command to execute the workflow:
 
         docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock \
                                       -v /datastore:/datastore \
                                       -v /workflows:/workflows \
                                       -v `pwd`/workflow.ini:/workflow.ini \
                                       -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem \
-                      pancancer/seqware_whitestar_pancancer:1.1.1 bash -c 'seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata --ini /workflow.ini'
+                      pancancer/seqware_whitestar_pancancer:1.1.1
+                        bash -c 'seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata --ini /workflow.ini'
 
 This is the approach you would take for running in production.  Each donor gets an INI file that is then used to launch a workflow using Docker.  If you choose to upload to S3 or GNOS your files should be uploaded there.  You can also find output in /datastore.
 
