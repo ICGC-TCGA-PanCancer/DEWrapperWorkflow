@@ -46,7 +46,7 @@ The DKFZ system is hosted in github but can't be built without a controlled acce
 
 Next, after logging back in, cache the seqware containers that we will be using
 
-        docker pull pancancer/seqware_whitestar_pancancer:1.1.1
+        docker pull pancancer/pcawg-dewrapper-workflow:1.0.6
         docker pull pancancer/pancancer_upload_download:1.2
         docker pull pancancer/pcawg-delly-workflow:1.3
 
@@ -90,31 +90,6 @@ Next, setup the shared directories on your worker host and get dependencies:
         wget https://seqwaremaven.oicr.on.ca/artifactory/seqware-release/com/github/seqware/seqware-distribution/1.1.1/seqware-distribution-1.1.1-full.jar
         sudo apt-get install openjdk-7-jdk maven
 
-### DEWrapperWorkflow
-
-#### Option 1 - Pull from Docker Hub (preferred option)
-
-The simplest way to get DEWrapper is to pull it from dockerhub by executing the following command:
-
-      docker pull pancancer/pcawg-dewrapper-workflow:1.0.6
-
-#### Option 2 - Download
-
-If you are unable to build docker images locally, there is a copy of the .zip for the DEWrapperWorkflow in Amazon S3 to save you the build time:
-
-        wget https://s3.amazonaws.com/oicr.workflow.bundles/released-bundles/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1.zip
-        mkdir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1/
-        java -cp seqware-distribution-1.1.1-full.jar net.sourceforge.seqware.pipeline.tools.UnZip --input-zip Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1.zip --output-dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1/
-
-#### Option 3 - Build
-
-If you wish to build DEWrapper from scratch, you can. Use these steps to build a copy of the workflow wrapping the DKFZ and EMBL pipelines:
-
-        git clone git@github.com:ICGC-TCGA-PanCancer/DEWrapperWorkflow.git
-        git checkout 1.0.6
-        mvn clean install
-        rsync -rauvL target/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 /workflows/
-
 ### GNOS Pem Key
 
 Copy your pem key to:
@@ -127,24 +102,13 @@ Now you can launch a test run of the workflow using the whitestar workflow engin
 
 This test run of the workflow is *not* fast. It is a real donor downloaded from GNOS and, therefore, is about a 48 hour run on a 32 core, 64G+ VM.  Do not try to run this on your laptop or a VM/host with limited resources.  Do not assume it uses fake test data, the test data is real, controlled access data.
 
-The command to execute the workflow is *(This assumes are you using the container pancancer/pcawg-dewrapper-workflow:1.0.6)*:
+The command to execute the workflow is:
 
       docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock \
                                     -v /datastore:/datastore \
                                     -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem \
                   pancancer/pcawg-dewrapper-workflow:1.0.6 \
                   seqware bundle launch --dir /workflow/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata
-
-**NOTE:**
-If you are **not** using the container `pancancer/pcawg-dewrapper-workflow:1.0.6`, you will need to use this command:
-
-      docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock \
-                                    -v /datastore:/datastore \
-                                    -v /workflows:/workflows \
-                                    -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem \
-                   pancancer/seqware_whitestar_pancancer:1.1.1 \
-                   seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata
-
 
 Look in your datastore for the `oozie-<uuid>` working directory created.  This contains the scripts/logs (generated-script directory) and the working directory for the two workflows (shared-data):
 
@@ -156,24 +120,13 @@ If you want to run with a specific INI:
 
         # edit the ini
         vim workflow.ini
-        # The command below applies only if you are using the docker images pancancer/pcawg-dewrapper-workflow:1.0.6
+        pancancer/pcawg-dewrapper-workflow:1.0.6
         docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock \
                                       -v /datastore:/datastore \
                                       -v `pwd`/workflow.ini:/workflow.ini \
                                       -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem \
                     pancancer/pcawg-dewrapper-workflow:1.0.6 \
                       seqware bundle launch --dir /workflow/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata --ini /workflow.ini
-
-**NOTE:**
-If you are **not** using the container `pancancer/pcawg-dewrapper-workflow:1.0.6`, you will need to use this command to execute the workflow:
-
-        docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock \
-                                      -v /datastore:/datastore \
-                                      -v /workflows:/workflows \
-                                      -v `pwd`/workflow.ini:/workflow.ini \
-                                      -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem \
-                      pancancer/seqware_whitestar_pancancer:1.1.1
-                        bash -c 'seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata --ini /workflow.ini'
 
 This is the approach you would take for running in production.  Each donor gets an INI file that is then used to launch a workflow using Docker.  If you choose to upload to S3 or GNOS your files should be uploaded there.  You can also find output in /datastore.
 
@@ -404,6 +357,17 @@ Our import for build process is: https://github.com/ICGC-TCGA-PanCancer/pcawg_de
 There is a SeqWare workflow and Docker image to go with it.  These are built by Travis and DockerHub respectively.
 
 If there are changes on the original BitBucket repo they need to be mirrored to the GitHub repo to they are automatically built.
+
+
+### Building DEWrapperWorkflow
+
+If you wish to build DEWrapper from scratch, you can. Use these steps to build a copy of the workflow wrapping the DKFZ and EMBL pipelines:
+
+        git clone git@github.com:ICGC-TCGA-PanCancer/DEWrapperWorkflow.git
+        git checkout 1.0.6
+        mvn clean install
+        rsync -rauvL target/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 /workflows/
+
 
 #### Github Bitbucket Sync
 
