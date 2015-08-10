@@ -96,7 +96,7 @@ Next, setup the shared directories on your worker host and get dependencies:
 
 The simplest way to get DEWrapper is to pull it from dockerhub by executing the following command:
 
-      docker pull pancancer/dewrapper:1.0.6
+      docker pull pancancer/pcawg-dewrapper-workflow:1.0.6
 
 #### Option 2 - Download
 
@@ -127,15 +127,15 @@ Now you can launch a test run of the workflow using the whitestar workflow engin
 
 This test run of the workflow is *not* fast. It is a real donor downloaded from GNOS and, therefore, is about a 48 hour run on a 32 core, 64G+ VM.  Do not try to run this on your laptop or a VM/host with limited resources.  Do not assume it uses fake test data, the test data is real, controlled access data.
 
-The command to execute the workflow is *(This assumes are you using the container pancancer/dewrapper:1.0.6)*:
+The command to execute the workflow is *(This assumes are you using the container pancancer/pcawg-dewrapper-workflow:1.0.6)*:
 
       docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock \
                                     -v /datastore:/datastore \
                                     -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem \
-                  pancancer/dewrapper:1.0.6 \
+                  pancancer/pcawg-dewrapper-workflow:1.0.6 \
                   seqware bundle launch --dir /workflow/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata
 
-**NOTE** If you are **not** using the container `pancancer/dewrapper:1.0.6`, you will need to use this command:
+**NOTE** If you are **not** using the container `pancancer/pcawg-dewrapper-workflow:1.0.6`, you will need to use this command:
 
       docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock \
                                     -v /datastore:/datastore \
@@ -155,15 +155,15 @@ If you want to run with a specific INI:
 
         # edit the ini
         vim workflow.ini
-        # The command below applies only if you are using the docker images pancancer/dewrapper:1.0.6
+        # The command below applies only if you are using the docker images pancancer/pcawg-dewrapper-workflow:1.0.6
         docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock \
                                       -v /datastore:/datastore \
                                       -v `pwd`/workflow.ini:/workflow.ini \
                                       -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem \
-                    pancancer/dewrapper:1.0.6 \
                     seqware bundle launch --dir /workflow/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata --ini /workflow.ini
+                    pancancer/pcawg-dewrapper-workflow:1.0.6 \
 
-**NOTE** If you are **not** using the container `pancancer/dewrapper:1.0.6`, you will need to use this command to execute the workflow:
+**NOTE** If you are **not** using the container `pancancer/pcawg-dewrapper-workflow:1.0.6`, you will need to use this command to execute the workflow:
 
         docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock \
                                       -v /datastore:/datastore \
