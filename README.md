@@ -92,17 +92,23 @@ Next, setup the shared directories on your worker host and get dependencies:
 
 ### DEWrapperWorkflow
 
-#### Option 1 - Download
+#### Option 1 - Pull from Docker Hub (preferred option)
 
-I uploaded a copy of the .zip for the DEWrapperWorkflow to Amazon S3 to save you the build time.
+The simplest way to get DEWrapper is to pull it from dockerhub by executing the following command:
+
+      docker pull pancancer/dewrapper:1.0.6
+
+#### Option 2 - Download
+
+If you are unable to build docker images locally, there is a copy of the .zip for the DEWrapperWorkflow in Amazon S3 to save you the build time:
 
         wget https://s3.amazonaws.com/oicr.workflow.bundles/released-bundles/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1.zip
         mkdir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1/
         java -cp seqware-distribution-1.1.1-full.jar net.sourceforge.seqware.pipeline.tools.UnZip --input-zip Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1.zip --output-dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1/
 
-#### Option 2 - Build
+#### Option 3 - Build
 
-Next, you will need to build a copy of the workflow wrappering the DKFZ and EMBL pipelines.
+If you wish to build DEWrapper from scratch, you can. Use these steps to build a copy of the workflow wrapping the DKFZ and EMBL pipelines:
 
         git clone git@github.com:ICGC-TCGA-PanCancer/DEWrapperWorkflow.git
         git checkout 1.0.6
@@ -121,7 +127,23 @@ Now you can launch a test run of the workflow using the whitestar workflow engin
 
 This test run of the workflow is *not* fast. It is a real donor downloaded from GNOS and, therefore, is about a 48 hour run on a 32 core, 64G+ VM.  Do not try to run this on your laptop or a VM/host with limited resources.  Do not assume it uses fake test data, the test data is real, controlled access data.
 
-       docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock -v /datastore:/datastore -v /workflows:/workflows -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem pancancer/seqware_whitestar_pancancer:1.1.1 seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata
+The command to execute the workflow is *(This assumes are you using the container pancancer/dewrapper:1.0.6)*:
+
+      docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock \
+                                    -v /datastore:/datastore \
+                                    -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem \
+                  pancancer/dewrapper:1.0.6 \
+                  seqware bundle launch --dir /workflow/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata
+
+**NOTE** If you are **not** using the container `pancancer/dewrapper:1.0.6`, you will need to use this command:
+
+      docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock \
+                                    -v /datastore:/datastore \
+                                    -v /workflows:/workflows \
+                                    -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem \
+                   pancancer/seqware_whitestar_pancancer:1.1.1 \
+                   seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata
+
 
 Look in your datastore for the `oozie-<uuid>` working directory created.  This contains the scripts/logs (generated-script directory) and the working directory for the two workflows (shared-data):
 
@@ -133,7 +155,22 @@ If you want to run with a specific INI:
 
         # edit the ini
         vim workflow.ini
-        docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock -v /datastore:/datastore -v /workflows:/workflows -v `pwd`/workflow.ini:/workflow.ini -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem pancancer/seqware_whitestar_pancancer:1.1.1 bash -c 'seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata --ini /workflow.ini'
+        # The command below applies only if you are using the docker images pancancer/dewrapper:1.0.6
+        docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock \
+                                      -v /datastore:/datastore \
+                                      -v `pwd`/workflow.ini:/workflow.ini \
+                                      -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem \
+                    pancancer/dewrapper:1.0.6 \
+                    seqware bundle launch --dir /workflow/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata --ini /workflow.ini
+
+**NOTE** If you are **not** using the container `pancancer/dewrapper:1.0.6`, you will need to use this command to execute the workflow:
+
+        docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock \
+                                      -v /datastore:/datastore \
+                                      -v /workflows:/workflows \
+                                      -v `pwd`/workflow.ini:/workflow.ini \
+                                      -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem \
+                      pancancer/seqware_whitestar_pancancer:1.1.1 bash -c 'seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata --ini /workflow.ini'
 
 This is the approach you would take for running in production.  Each donor gets an INI file that is then used to launch a workflow using Docker.  If you choose to upload to S3 or GNOS your files should be uploaded there.  You can also find output in /datastore.
 
