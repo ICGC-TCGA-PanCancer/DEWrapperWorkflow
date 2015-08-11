@@ -1,3 +1,7 @@
+# 1.0.6
+* Fixed a bug which caused \*somatic.indel.vcf.gz.tbi to be added twice.
+* Added a Docker file which can be used to build an image containing this workflow.
+
 # 1.0.5
 
 * the plotting code for the DKFZ container now uses <60G RAM (DKFZ 1.3 image)

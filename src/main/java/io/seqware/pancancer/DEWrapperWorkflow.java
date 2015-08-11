@@ -417,14 +417,14 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
             vcfmd5s.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz.md5");
 
             // Tabix
-            tbis.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.tbi");
+            tbis.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.indel.vcf.gz.tbi");
             tbis.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.tbi");
             tbis.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.snv_mnv.vcf.gz.tbi");
             tbis.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.snv_mnv.vcf.gz.tbi");
             tbis.add(baseFile + "copyNumberEstimation_" + Version.DKFZ_CNV_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.cnv.vcf.gz.tbi");
 
             // Tabix MD5
-            tbimd5s.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.tbi.md5");
+            tbimd5s.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.indel.vcf.gz.tbi.md5");
             tbimd5s.add(baseFile + "indelCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.indel.vcf.gz.tbi.md5");
             tbimd5s.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".germline.snv_mnv.vcf.gz.tbi.md5");
             tbimd5s.add(baseFile + "snvCalling_" + Version.DKFZ_SNV_INDEL_WORKFLOW_VERSION_UNDERSCORE + "." + formattedDate + ".somatic.snv_mnv.vcf.gz.tbi.md5");
