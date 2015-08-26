@@ -310,7 +310,7 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
                                 + emblDockerName
                                 + " "
                                 // command received by seqware (replace this with a real call to Delly after getting bam files downloaded)
-                                + "seqware bundle launch --dir /home/seqware/DELLY/target/Workflow_Bundle_DELLY_1.3.0_SeqWare_1.1.1 --engine whitestar-parallel --no-metadata --ini /workflow.ini\n");
+                                + "seqware bundle launch --dir /home/seqware/DELLY/target/Workflow_Bundle_DELLY_1.4.0_SeqWare_1.1.1 --engine whitestar-parallel --no-metadata --ini /workflow.ini\n");
 
         // timing
         emblJob.getCommand().addArgument("date +%s >> embl_timing.txt \n");
