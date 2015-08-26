@@ -1,4 +1,4 @@
-<bundle version="1.0-SNAPSHOT">
+<bundle version="1.0.7">
   <workflow name="DEWrapperWorkflow" version="${workflow-version}" seqware_version="${seqware-version}"
   basedir="${workflow_bundle_dir}/Workflow_Bundle_DEWrapperWorkflow/${workflow-version}">
     <description>${workflow-description}</description>
