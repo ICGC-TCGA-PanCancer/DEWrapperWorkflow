@@ -510,7 +510,7 @@ public class DEWrapperWorkflow extends AbstractWorkflowDataModel {
         for (String tumorAliquotId : tumorAliquotIds) {
 
             // String baseFile = "/workflow_data/" + tumorAliquotId + ".embl-delly_1-0-0-preFilter."+formattedDate;
-            String baseFile = tumorAliquotId + ".embl-delly_1-3-0-preFilter." + formattedDate;
+            String baseFile = tumorAliquotId + ".embl-delly_1-4-0-preFilter." + formattedDate;
 
             qcJson = "`find . | grep " + baseFile + ".sv.qc.json | head -1`";
             timingJson = "`find . | grep " + baseFile + ".sv.timing.json | head -1`";
