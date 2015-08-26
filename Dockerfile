@@ -23,7 +23,7 @@ COPY workflow /code/workflow
 WORKDIR /code
 RUN mvn clean package
 # Set up the built workflow in "/workflow"
-RUN rsync -rauvL target/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 /workflow
+RUN rsync -rauvL target/Workflow_Bundle_DEWrapperWorkflow_1.0.7_SeqWare_1.1.1 /workflow
 WORKDIR /workflow
 USER seqware
 CMD ["/bin/bash"]
