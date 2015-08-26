@@ -36,7 +36,7 @@ It's complicated.  The workflows have versions, the underlying tools have versio
 
 #### EMBL
 
-The workflow is hosted on DockerHub and source in git.  Version 1.3.0 was tagged in git and is focused on multi-tumor support.  So the files produced are tagged with "embl-delly_1-3-0-preFilter".
+The workflow is hosted on DockerHub and source in git.  Version 1.4.0 was tagged in git and is focused on multi-tumor support.  So the files produced are tagged with "embl-delly_1-3-0-preFilter".
 
 #### DKFZ
 
@@ -46,9 +46,9 @@ The DKFZ system is hosted in github but can't be built without a controlled acce
 
 Next, after logging back in, cache the seqware containers that we will be using
 
-        docker pull pancancer/pcawg-dewrapper-workflow:1.0.6
+        docker pull pancancer/pcawg-dewrapper-workflow:1.0.7
         docker pull pancancer/pancancer_upload_download:1.2
-        docker pull pancancer/pcawg-delly-workflow:1.3
+        docker pull pancancer/pcawg-delly-workflow:1.4
 
 ### Docker Image Build for DKFZ
 
@@ -107,8 +107,8 @@ The command to execute the workflow is:
       docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock \
                                     -v /datastore:/datastore \
                                     -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem \
-                  pancancer/pcawg-dewrapper-workflow:1.0.6 \
-                  seqware bundle launch --dir /workflow/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata
+                  pancancer/pcawg-dewrapper-workflow:1.0.7 \
+                  seqware bundle launch --dir /workflow/Workflow_Bundle_DEWrapperWorkflow_1.0.7_SeqWare_1.1.1 --engine whitestar --no-metadata
 
 Look in your datastore for the `oozie-<uuid>` working directory created.  This contains the scripts/logs (generated-script directory) and the working directory for the two workflows (shared-data):
 
@@ -120,13 +120,13 @@ If you want to run with a specific INI:
 
         # edit the ini
         vim workflow.ini
-        pancancer/pcawg-dewrapper-workflow:1.0.6
+        pancancer/pcawg-dewrapper-workflow:1.0.7
         docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock \
                                       -v /datastore:/datastore \
                                       -v `pwd`/workflow.ini:/workflow.ini \
                                       -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem \
-                    pancancer/pcawg-dewrapper-workflow:1.0.6 \
-                      seqware bundle launch --dir /workflow/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata --ini /workflow.ini
+                    pancancer/pcawg-dewrapper-workflow:1.0.7 \
+                      seqware bundle launch --dir /workflow/Workflow_Bundle_DEWrapperWorkflow_1.0.7_SeqWare_1.1.1 --engine whitestar --no-metadata --ini /workflow.ini
 
 This is the approach you would take for running in production.  Each donor gets an INI file that is then used to launch a workflow using Docker.  If you choose to upload to S3 or GNOS your files should be uploaded there.  You can also find output in /datastore.
 
@@ -146,7 +146,7 @@ useful but difficult to understand.
 Please note the following container versions. This mechanism is also how we will release new sub-components but generally these are fixed for a release of the DEWrapper workflow since the interface may change:
 
     dkfzDockerName=pancancer/dkfz_dockered_workflows
-    emblDockerName=pancancer/pcawg-delly-workflow:1.3
+    emblDockerName=pancancer/pcawg-delly-workflow:1.4
     gnosDockerName=pancancer/pancancer_upload_download:1.2
 
 
@@ -305,7 +305,7 @@ if your worker nodes/VMs are long-lived.  In this case the variant call files le
 
 There are three components to this currently, the first docker container is started with the following
 
-    docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock -v /not-datastore:/not-datastore  -v /workflows:/workflows -v `pwd`/different_dirs_workflow.ini:/workflow.ini -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem seqware/seqware_whitestar_pancancer:1.1.1  bash -c "sed -i 's/datastore/not-datastore/g' /home/seqware/.seqware/settings ; seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata --ini /workflow.ini"
+    docker run --rm -h master -it -v /var/run/docker.sock:/var/run/docker.sock -v /not-datastore:/not-datastore  -v /workflows:/workflows -v `pwd`/different_dirs_workflow.ini:/workflow.ini -v /home/ubuntu/.ssh/gnos.pem:/home/ubuntu/.ssh/gnos.pem seqware/seqware_whitestar_pancancer:1.1.1  bash -c "sed -i 's/datastore/not-datastore/g' /home/seqware/.seqware/settings ; seqware bundle launch --dir /workflows/Workflow_Bundle_DEWrapperWorkflow_1.0.7_SeqWare_1.1.1 --engine whitestar --no-metadata --ini /workflow.ini"
 
 First, for the section "-v /not-datastore:/not-datastore". Make sure that you match the path inside and outside the container. i.e. do not use something like "-v  /not-datastore:/datastore". If they do not match then the current workflow will fail, having created directories in the wrong locations.
 
@@ -364,9 +364,9 @@ If there are changes on the original BitBucket repo they need to be mirrored to 
 If you wish to build DEWrapper from scratch, you can. Use these steps to build a copy of the workflow wrapping the DKFZ and EMBL pipelines:
 
         git clone git@github.com:ICGC-TCGA-PanCancer/DEWrapperWorkflow.git
-        git checkout 1.0.6
+        git checkout 1.0.7
         mvn clean install
-        rsync -rauvL target/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 /workflows/
+        rsync -rauvL target/Workflow_Bundle_DEWrapperWorkflow_1.0.7_SeqWare_1.1.1 /workflows/
 
 
 #### Github Bitbucket Sync
