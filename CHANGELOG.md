@@ -1,4 +1,9 @@
+# 1.0.7
+
+* incrementing the Delly Docker container from 1.3 to 1.4 to address multi-tumor file upload prep problem
+
 # 1.0.6
+
 * Fixed a bug which caused \*somatic.indel.vcf.gz.tbi to be added twice.
 * Added a Docker file which can be used to build an image containing this workflow.
 

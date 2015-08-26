@@ -1,12 +1,12 @@
 FROM pancancer/seqware_whitestar_pancancer:1.1.1
 MAINTAINER Solomon Shorser <solomon.shorser@oicr.on.ca>
-LABEL workflow.name="DEWrapper" workflow.version="1.0.6"
+LABEL workflow.name="DEWrapper" workflow.version="1.0.7"
 # Run this container as:
 # docker run --rm -h master -it \
 #    -v /var/run/docker.sock:/var/run/docker.sock \
 #    -v /datastore:/datastore \
 #    -v /home/ubuntu/.ssh:/home/ubuntu/.ssh \
-# pancancer/dewrapper:1.0.6 seqware bundle launch --dir /workflow/Workflow_Bundle_DEWrapperWorkflow_1.0.6_SeqWare_1.1.1 --engine whitestar --no-metadata
+# pancancer/dewrapper:1.0.7 seqware bundle launch --dir /workflow/Workflow_Bundle_DEWrapperWorkflow_1.0.7_SeqWare_1.1.1 --engine whitestar --no-metadata
 
 USER root
 RUN apt-get -m update
