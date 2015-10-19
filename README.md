@@ -1,6 +1,6 @@
 # The DKFZ/EMBL PanCancer Variant Calling Workflow
 
-This is intended to wrap the DKFZ and EMBL workflows as a SeqWare workflow and allow it to run on the SeqWare Docker container.  It is the orchestration workflow that calls GNOS download, the EMBL workflow for structural variation, the DKFZ workflow for SNVs, indels, and copy number, and finally upload of results back to GNOS.
+This project is intended to wrap the DKFZ and EMBL workflows as a single SeqWare workflow running inside it's own Docker container.  It is the orchestration workflow that calls GNOS download, the EMBL workflow for structural variation, the DKFZ workflow for SNVs, indels, and copy number, and finally upload of results back to GNOS.
 
 Unlike previous workflows, there is now a central decider that generates INIs from a de-duplicated central index hosted on PanCancer.info.  This should be much more reliable than the distributed deciders used previously.  For more information see the [central-decider-client](https://github.com/ICGC-TCGA-PanCancer/central-decider-client).
 
