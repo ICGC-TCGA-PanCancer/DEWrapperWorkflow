@@ -4,7 +4,7 @@ This project is intended to wrap the DKFZ and EMBL workflows as a single SeqWare
 
 Unlike previous workflows, there is now a central decider that generates INIs from a de-duplicated central index hosted on PanCancer.info.  This should be much more reliable than the distributed deciders used previously.  For more information see the [central-decider-client](https://github.com/ICGC-TCGA-PanCancer/central-decider-client).
 
-For information on setting this workflow up in the context of a larger cloud of worker VMs provisioned and managed by a central launcher the doles out work from the INIs generated with the central decider, see our documentation [here](https://github.com/ICGC-TCGA-PanCancer/pancancer-documentation).
+For information on setting this workflow up in the context of a larger cloud of worker VMs provisioned and managed by a central launcher the doles out work from the INIs generated with the central decider, see our documentation [here](https://github.com/ICGC-TCGA-PanCancer/pancancer-documentation).  Specifically we are building a PanCancer Workflow Launcher that allows you to schedule workflows and automatically launch worker VMs on Amazon and other cloud environments.  For more information see [here](https://github.com/ICGC-TCGA-PanCancer/cli/blob/develop/QuickStart.md#pancancer-workflow-launcher--cli).
 
 That infrastructure linked above is complex.  What follows are sufficient instructions for runing the workflow manually on a single box.  This is helpful for testing and/or small-scale runs.
 
