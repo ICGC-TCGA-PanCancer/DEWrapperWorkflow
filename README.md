@@ -42,15 +42,17 @@ The workflow is hosted on DockerHub and source in git.  Version 1.4.0 was tagged
 
 The DKFZ system is hosted in github but can't be built without a controlled access Roddy binary. Version 1.3.0 was tagged in git and is focused on multi-tumor support.  The underlying version for Roddy is Roddy_2.2.49_COW_1.0.132-1_CNE_1.0.189.  The output files from this Docker image actually contain the strings "1-0-189" or "1-0-132-1".
 
-### Docker Image Pull from DockerHub
+### Docker Image Pulled from DockerHub
 
-Next, after logging back in, cache the seqware containers that we will be using
+Now that you have installed Docker (see above) the next step is to cache the Docker images that are pre-built for you and this overall workflow will use:
 
         docker pull pancancer/pcawg-dewrapper-workflow:1.0.7
         docker pull pancancer/pancancer_upload_download:1.2
         docker pull pancancer/pcawg-delly-workflow:1.4
 
 ### Docker Image Build for DKFZ
+
+DKFZ cannot be distrbuted via DockerHub since it contains pre-published code.  You have two options:
 
 #### Option 1 - Download
 
