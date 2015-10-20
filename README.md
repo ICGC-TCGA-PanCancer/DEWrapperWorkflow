@@ -16,7 +16,7 @@ If you have questions please contact Brian O'Connor at boconnor@oicr.on.ca or th
 
 ## For Users
 
-The below section assumes that you are a user and primarily interested in running the workflow, not create a new version of it. It will walk you through running the workflow on a single Worker host (VM or regular Linux machine) and includes minimal instructions to build the workflow using (mostly) pre-created components.
+The below section assumes that you are a user and primarily interested in running the workflow, not create a new version of it. It will walk you through running the workflow on a single Worker host (VM or regular Linux machine) and includes minimal instructions to build the workflow using (mostly) pre-created components provides as Docker images.
 
 ### Docker Setup
 
